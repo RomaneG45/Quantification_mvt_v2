@@ -1,0 +1,4 @@
+Les fichiers dom_HABIT.csv et non_dom_HABIT.csv correspondent aux fichiers TAS1D48140076_2025-04-08_IMU.csv et TAS1H46190341_(2025-04-08)-IMU.csv, enregistrés le 05/12/24
+
+Les fichiers dom_PARTNER.csv et non_dom_PARTNER.csv correspondent aux fichiers TAS1H46190449_(2025-04-16)-IMU.csv et TAS1D48140076_(2025-04-16)-IMU.csv, enregistrés le 15/04/25
+

@@ -1,0 +1,3 @@
+Les fichiers Droit.csv et Gauche.csv correspondent aux fichiers TAS1D48140076_2025-04-08_IMU.csv et TAS1H46190341_(2025-04-08)-IMU.csv, enregistrés le 05/12/24 -> Dans dossier Enfant 1
+
+Les fichiers Gauche.csv et Droit.csv correspondent aux fichiers TAS1H46190449_(2025-04-16)-IMU.csv et TAS1D48140076_(2025-04-16)-IMU.csv, enregistrés le 15/04/25 -> dans dossier Enfant 2

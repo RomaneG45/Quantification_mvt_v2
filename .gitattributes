@@ -1,0 +1,4 @@
+*.csv filter=lfs diff=lfs merge=lfs -text
+*.xsls filter=lfs diff=lfs merge=lfs -text
+*.csv
+*.xlsx
