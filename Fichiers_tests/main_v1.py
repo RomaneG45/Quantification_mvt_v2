@@ -1,5 +1,5 @@
 """"
-COPY OF MAIN BEFORE CHANGING THE HOURS SELECTION CRITERIA (SELECTION EN DATETIME ET EN STR ET EN CONVERSION EN SECONDES)
+COPY OF MAIN BEFORE CHANGING THE HOURS SELECTION CRITERIA (SELECTION IN DATETIME AND IN STR AND CONVERSION IN SECONDES) (16/06/2025)
 
 This file contains the calculation of different metrics.
 :import segment_file : program that cuts 1 file of N days into N file of 1 day (from 8h to 20h).
