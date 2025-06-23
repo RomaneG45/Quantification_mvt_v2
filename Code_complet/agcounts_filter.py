@@ -69,7 +69,7 @@ def convert_AC(file_dom, file_non_dom):
         time_column="Timestamp",
     )
 
-    non_dom_counts = get_counts_csv(file_non_dom, freq=100, epoch=2)
+    non_dom_counts = get_counts_csv(file_non_dom, freq=100, epoch=1)
     non_dom_counts = convert_counts_csv(
         file_non_dom,
         outfile="Activity_counts_files/non_dom_counts.csv",

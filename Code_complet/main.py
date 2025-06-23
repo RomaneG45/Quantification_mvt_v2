@@ -139,6 +139,7 @@ for modality in modalities_list:
         sec_count = h * 3600 + m * 60 + s
         count_date = dom_counts["Timestamp"][data_idx].strftime("%Y-%m-%d")
 
+        #///////////////////////////////////////////////////////////////////////////////////////// MIN TIME = RECORD_START_TIME[IDX DE LA BOUCLE DE COMPARAISON][IDX_RECORD]
         # Saving Data between max_time and min_time for the metrics calculation
         if (min_time[idx_record] <= sec_count < max_time[idx_record]) and (sec_count != min(len(dom_counts), len(non_dom_counts)) - 1): # and count_date == record_date[idx_record] : # et dates correspondantes :
             dom_AC.append(dom_counts.loc[data_idx, "AC"])
