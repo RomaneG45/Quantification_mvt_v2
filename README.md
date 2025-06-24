@@ -1,3 +1,4 @@
+HEAD
 Activity counts files : folder containing the backup files of the activity counts after preprocessing in the main program
   -> dom_counts : AC of the dominant upper limb
   -> non_dom_counts : AC of the non dominant upper limb
