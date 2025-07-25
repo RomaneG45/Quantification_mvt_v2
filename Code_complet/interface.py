@@ -1,15 +1,95 @@
-"""
-"""
-import tkinter as tk
+"""This file contains the interface for the Actinalyseur application, allowing users to select a folder and initiate calculations."""
+
+import customtkinter as ctk
 from tkinter import filedialog
+from PIL import Image
+from customtkinter import CTkImage
 
-def select_input_file():
-    # Create a tk window (without display)
-    racine = tk.Tk()
-    # Hide main window
-    racine.withdraw() 
+# Global variable to store the selected folder path
+folder = ""
 
-    # Open the folder selection dialog box
-    folder_path = filedialog.askdirectory(title = "Sélectionner un dossier")
+# Folder selection function
+def choose_folder():
+    """Function to open a dialog for folder selection and update the label with the selected folder path.
+    :return: The selected folder path."""
+    global folder
+    folder = filedialog.askdirectory()
+    if folder:
+        folder_label.configure(text=folder, width=200, height=40, anchor="nw", wraplength=280)
+    else:
+        folder_label.configure(text="No Folder Chosen")
 
-    return folder_path
+    return folder
+
+# Function to launch calculations
+def save_action(window):
+    """Function to handle the action when the user clicks the 'Metrics calculation' button.
+    :param window: The main application window."""
+    window.destroy()
+
+# --- Layout ---
+def create_window():
+    """Function to create the main application window with a folder selection interface.
+    :return: The selected folder path."""
+
+    # Basic configuration
+    ctk.set_appearance_mode("light")     
+    ctk.set_default_color_theme("green") 
+
+    # Main window
+    window = ctk.CTk()
+    window.title("Actinalyseur")
+    window.geometry("500x220")
+
+
+    """# Selection folder button
+    choose_button = ctk.CTkButton(window, text="Choose File", command=choose_folder)
+    choose_button.pack(pady=(5, 5))"""
+    """De la"""
+    # Load image
+    file_img = CTkImage(Image.open("C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v2/Quantification_mvt_v2/Code_complet/folder_image.png"), size=(90, 90))  # ajuste la taille selon ton image
+
+    # Horizontal frame for image + button + label
+    selection_frame = ctk.CTkFrame(window, fg_color= "transparent" )
+    selection_frame.pack()
+
+    # Image à gauche
+    image_label = ctk.CTkLabel(selection_frame, image=file_img, text="")
+    image_label.pack(side="left", padx=(50,15), pady=(30, 30))
+
+    frame_text = ctk.CTkFrame(selection_frame, fg_color= "transparent" )
+    frame_text.pack(side = "right")
+
+    frame_please = ctk.CTkFrame(frame_text, fg_color= "transparent" )
+    frame_please.pack(fill="x", expand=True)
+
+    frame_choose_button = ctk.CTkFrame(frame_text, fg_color= "transparent" )
+    frame_choose_button.pack(fill="x", expand=True, pady = (20,0))
+
+    frame_calculation_button = ctk.CTkFrame(window, fg_color= "transparent" )
+    frame_calculation_button.pack(fill="x", expand=True)#, pady = (20,0))
+
+    # Label instruction
+    instruction_label = ctk.CTkLabel(frame_please, text="Please upload the child folder", font=("Arial", 14, "italic"), anchor="w", justify="left")
+    instruction_label.pack(side="left", padx=10)
+
+    # Bouton de sélection
+    choose_button = ctk.CTkButton(frame_choose_button, text="Choose File", command=choose_folder, fg_color = "transparent",border_width=2, border_color = "#2ecc71", text_color = "#2ecc71", hover_color = "#DFDFDF" , width = 120, height = 40)
+    choose_button.pack(side="left", padx=5)
+    """jusque la """
+
+
+    # Label to display the selected folder
+    global folder_label
+    folder_label= ctk.CTkLabel(frame_choose_button, text="No Folder Chosen", text_color="gray", anchor="w", width=300)
+    folder_label.pack(side="left", padx=(10,0))#pady=(0, 20))
+
+    # Button to launch calculations
+    save_button = ctk.CTkButton(frame_calculation_button, text="Metrics calculation", command= lambda: save_action(window), fg_color="#2ecc71", hover_color="#27ae60")
+    save_button.pack(side = "right", padx = (0,20), pady=(20,20))
+
+    # Run the main loop
+    window.mainloop()
+
+    return folder
+#create_window()

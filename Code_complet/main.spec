@@ -1,0 +1,62 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+datas = [
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/__init__.pyi', 'mne'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/beamformer/__init__.pyi', 'mne/beamformer'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/channels/__init__.pyi', 'mne/channels'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/commands/__init__.pyi', 'mne/commands'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/datasets/__init__.pyi', 'mne/datasets'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/decoding/__init__.pyi', 'mne/decoding'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/export/__init__.pyi', 'mne/export'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/forward/__init__.pyi', 'mne/forward'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/gui/__init__.pyi', 'mne/gui'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/html_templates/__init__.pyi', 'mne/html_templates'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/inverse_sparse/__init__.pyi', 'mne/inverse_sparse'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/io/__init__.pyi', 'mne/io'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/minimum_norm/__init__.pyi', 'mne/minimum_norm'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/preprocessing/__init__.pyi', 'mne/preprocessing'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/report/__init__.pyi', 'mne/report'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/simulation/__init__.pyi', 'mne/simulation'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/source_space/__init__.pyi', 'mne/source_space'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/stats/__init__.pyi', 'mne/stats'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/time_frequency/__init__.pyi', 'mne/time_frequency'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/utils/__init__.pyi', 'mne/utils'),
+    ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/viz/__init__.pyi', 'mne/viz'),
+    ('C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v2/Quantification_mvt_v2/Code_complet/folder_image.png','Code_complet'),
+]
+
+a = Analysis(
+    ['main.py'],
+    pathex=[],
+    binaries=[],
+    datas=datas,
+    hiddenimports=[],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name='main',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)

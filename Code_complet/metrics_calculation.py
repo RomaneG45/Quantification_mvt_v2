@@ -28,7 +28,7 @@ def sec_metrics(dom_AC, non_dom_AC):
     for idx_sec in range(len(dom_AC)):
 
         #Magnitude Ratio 
-        #*******Calcul de Bailey RR 2014 : +1 pour chaque AC pour ne pas diviser par 0**********
+        #*******Bailey RR 2014 calculation: +1 for each AC to avoid dividing by 0**********
         if (non_dom_AC[idx_sec] != 0) & (dom_AC[idx_sec] != 0) :
             magnitude_ratio.append(np.log((non_dom_AC[idx_sec] + 1) / (dom_AC[idx_sec] + 1)))
 
@@ -45,7 +45,6 @@ def maui_baui(dom_AC, non_dom_AC):
     :return maui : float of MAUI (Mono Arm Use Index)
     :return baui : float of BAUI (Bilateral Arm Use Index)
     """
-
 
     """*************************************************************************** MAUI / BAUI ********************************************************************************************"""
     #Initializations
@@ -110,30 +109,33 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude):
     two_sec_non_dom_AC = np.array(two_sec_non_dom_AC)
 
     #Active duration
-    if len(two_sec_dom_AC) == 0 :
+    """if len(two_sec_dom_AC) == 0 :
         dom_AD = 404
     else:
         dom_AD = np.sum(two_sec_dom_AC > 75.0) *100 / len(two_sec_dom_AC) 
     if len(two_sec_non_dom_AC) == 0 :
         non_dom_AD = 404      
     else:
-        non_dom_AD = np.sum(two_sec_non_dom_AC > 75.0) *100 / len(two_sec_non_dom_AC) 
+        non_dom_AD = np.sum(two_sec_non_dom_AC > 75.0) *100 / len(two_sec_non_dom_AC) """
+    dom_AD = "Méthode non définie"
+    non_dom_AD = "Méthode non définie"
 
 
     #Bimanual active duration
-    sum_bimanual_AD = 0
+    """sum_bimanual_AD = 0
     for idx_sec in range(0, len(two_sec_dom_AC)):
         if two_sec_dom_AC[idx_sec] > 75 and two_sec_non_dom_AC[idx_sec] > 75:
             sum_bimanual_AD += 1
-    bimanual_AD = sum_bimanual_AD *100 / (idx_sec + 1)
+    bimanual_AD = sum_bimanual_AD *100 / len(two_sec_dom_AC)"""
+    bimanual_AD = "Méthode non définie"
 
 
-
+    use_ratio_time = "Méthode non définie"
     #Use ratio with Active Duration
-    if dom_AD == 0:
+    """if dom_AD == 0:
         use_ratio_time = 404
     else:
-        use_ratio_time = non_dom_AD / dom_AD
+        use_ratio_time = non_dom_AD / dom_AD"""
 
     #Mean AC 
     dom_mean_AC = np.mean(dom_AC)
@@ -171,5 +173,3 @@ def metrics(dom_AC, non_dom_AC):
         "baui": baui
     }
     return df_metrics 
-
-#metrics([0,100,0,100,100,150,70,10],[0,0,100,100,100,80,70,10])

@@ -1,4 +1,5 @@
-""""""
+""" This file contains the functions to save the metrics in an Excel file.
+It selects the output file, initializes the first column with metric names, and saves the metrics for each day."""
 
 import numpy as np
 import openpyxl
@@ -20,7 +21,7 @@ def select_output_file(file_path, ID, therapy_name):
     # Select file
     if os.path.exists(file_path): 
         # If file exists, save existing data and add modifications
-        my_wb = openpyxl.load_workbook(file_path)  # Save existing data
+        my_wb = openpyxl.load_workbook(file_path)  
         print("File exists, loading existing data.")
     else:
         # Create file 
@@ -56,16 +57,17 @@ def select_output_file(file_path, ID, therapy_name):
 
     return my_wb
 
-def write_in_file(my_wb, file_path, record_time, idx_day, lst_time_metrics, lst_intensity_metrics):
+def write_in_file(my_wb, file_path, record_time, idx_day, day, lst_time_metrics, lst_intensity_metrics):
     """
     This function writes the metrics into an Excel file. It creates a new column for each child and fills it with the corresponding metrics.
     :param my_wb : Excel file to save data.
     :param file_path : Path to the output file.
     :param record_time : Int of the minutes of recorded time for 1 day.
     :param idx_day : Int of the day index (ex : 1 for day 1).
+    :param day : Datetime date of the day.
     :param lst_time_metrics: List of time metrics to write in the file.
     :param lst_intensity_metrics: List of intensity metrics to write in the file.
-    :return : Save the metrics from lst_time_metrics and lst_intensity_metrics in the excel file corresponding to my_wb
+    :return : Save the metrics from lst_time_metrics and lst_intensity_metrics in the excel file corresponding to my_wb.
     """
     my_sheet = my_wb.active
 
@@ -75,8 +77,9 @@ def write_in_file(my_wb, file_path, record_time, idx_day, lst_time_metrics, lst_
 
     """************************* Add a new day in the day row ****************************"""
     cell = my_sheet.cell(row = 3, column = idx_day + 1)
-    cell.value = "Jour " + str(idx_day)
+    cell.value = str(day) 
     cell.fill = PatternFill(start_color="be6a59", end_color="be6a59", fill_type="solid")
+    cell.alignment = Alignment(wrapText =True)
 
 
     """************************* Filling the column with metric values ****************************"""
@@ -93,18 +96,18 @@ def write_in_file(my_wb, file_path, record_time, idx_day, lst_time_metrics, lst_
 
 
 
-def mean_std(file_path, nb_pair_child):
+#def mean_std(file_path, nb_pair_child):
     """
     This function calculates the mean and standard deviation of the metrics for a given therapy.
     :param file_path: Path to the output file.
     :param nb_pair_child: Number of pair of children in the study (used to determine the column where the mean and standard deviation will be written).
     """
-    my_wb = openpyxl.load_workbook(file_path) 
+    """my_wb = openpyxl.load_workbook(file_path) 
     name_col_lst = ["Mean Habit", "Standard Deviation Habit", "Mean Partner", "Standard Deviation Partner"]
     
     # Loop through each worksheet in the workbook
     for my_sheet in my_wb.worksheets:
-        """****************************** Column header definition ****************************"""
+        ""****************************** Column header definition ****************************""
         #Initialize the first row with the mean and standard deviation column names
         lst_idx_col = 3 
         for name_col in name_col_lst:
@@ -118,10 +121,10 @@ def mean_std(file_path, nb_pair_child):
         # Loop through each metric row (from the second row to the tenth row, assuming the metrics are in the first 10 rows)
         for row_metric in my_sheet.iter_rows(min_row = 2, max_row = 10 , min_col = 2, max_col = nb_pair_child*2 + 1, values_only=True):
 
-            """****************************** Saving all children values for a specific metric from a specific therapy ****************************"""
+            ""****************************** Saving all children values for a specific metric from a specific therapy ****************************""
             # Initialize a dict to store the distribution of values for the current metric
             distrib_therapy_dict = {"distribution HABIT": [], "distribution PARTNER": []}
-            """////////// ENLEVER LE CAS OU LA VALEUR EST = 404 (PROBLEME DE DIVISION PAR 0 DANS MAUI BAUI ET UR) //////////"""
+            ""////////// ENLEVER LE CAS OU LA VALEUR EST = 404 (PROBLEME DE DIVISION PAR 0 DANS MAUI BAUI ET UR) //////////""
             # Loop through each value in the metric row
             for idx_col in range(1, nb_pair_child*2 + 1, 2):
                 if row_metric[idx_col - 1] is not None:
@@ -130,7 +133,7 @@ def mean_std(file_path, nb_pair_child):
                 if row_metric[idx_col - 1] is not None:
                     distrib_therapy_dict["distribution PARTNER"].append(row_metric[idx_col - 1]) 
             
-            """****************************** Writing mean and std values in excel ****************************"""
+            ""****************************** Writing mean and std values in excel ****************************""
             idx_col = 3
             # Loop through each value in the metric row and distribute them into the corresponding therapy list
             for therapy in distrib_therapy_dict.keys():
@@ -145,7 +148,7 @@ def mean_std(file_path, nb_pair_child):
             idx_row += 1
 
     my_wb.save(file_path)
-
+"""
 
 """************************* Example of use ****************************"""
 

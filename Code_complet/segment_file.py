@@ -1,5 +1,12 @@
 """This file select the time interval to analyse depending on the modality and the therapy recorded (HABIT/PARTNER and daily_life center or daily life at home)"""
 
+#///////////////////////////////////// A verifier : 
+# /////////////////////////////////////////// Que se passe-t-il si jour manquant
+# /////////////////////////////////////////// Si c'est les bonnes heures : marche quand meme
+# /////////////////////////////////////////// Que ce passe-t-il si la comparaison de 1h30 comporte plus ou moins que 1h30
+# /////////////////////////////////////////// Si les activitées se chevauchent : mettre uniquement l'heure de début la plus tôt, l'heure de fin la plus tard 
+
+
 from datetime import datetime, time
 
 
@@ -8,70 +15,71 @@ def segment_time(modality, therapy, info_sheet):
     :param modality : Str of the modality type ("Vie_quotidienne" or "Stage")
     :param therapy : Str of the therapy name ("HABIT" or "PARTNER")
     :param info_sheet : Workbook sheet that contains the start and end time of records
-    :return record_date : list of the dates of records
-    :return lst_record_start_time : list of lists, first list is the start times for 5h comparison, second list is the start times for 1h30 comparison
-    :return lst_record_end_time : list of lists, first list is the end times for 5h comparison, second list is the end times for 1h30 comparison
+    :return comp_vie_quot : Dict with the date as key and the start and end time of the activity as value
+    :return comp_1h30 : Dict with the date as key and the start and end time of the activity as value
+    :return comp_5h : Dict with the date as key and the start and end time of the activity as value
     """
+    comp_5h = {}
+    comp_1h30 = {}
+    comp_vie_quot = {}
+    
+    for row in info_sheet.iter_rows(min_row=2):
 
-    # Lists that contain start time and end time in a specific time lapse (5h and 1h30)
-    record_1h30_start_time = []
-    record_1h30_end_time = []
-    record_5h_start_time = []
-    record_5h_end_time = []
-    record_date = []
+        if modality == "Vie_quotidienne":
 
-    # Lists that cointain the lists of start time and end time for a specific time lapse, thus the lists have all the timelapse
-    lst_record_start_time = []
-    lst_record_end_time = []
+            if row[4].value is not None: #row[4] correspond to the E column = the date column
+                row_date = row[4].value.date()
+                comp_vie_quot[row_date] = {"start_time" : ["08:00:00"], "end_time" : ["20:00:00"]}
 
-    # Variable insert once 9h (or 12h) in the start time for Stage 
-    add_9h = True
-    add_12h30 = True
+            # Get the date
+            if row[4].value is not None:
+                row_date = row[4].value.date()
+                comp_5h[row_date] = {"start_time" : [], "end_time" : []}
+                comp_1h30[row_date] = {"start_time" : [], "end_time" : []}
 
-    # Save dates
-    for date in info_sheet["E"]: 
-        # Choose only datetime value to remove the title line
-        if date.value == None and type(date.value) != str :
-            record_date.append(record_date[-1]) 
-        elif type(date.value) != str :
-            record_date.append(date.value) #date.value.strftime("%Y-%m-%d") #on peut peut etre juste prendre la valeur de la case
+        elif therapy == "PARTNER":
 
-    print(modality)
-    if modality == "Vie_quotidienne":
-        lst_record_start_time.append(["08:00:00"])
-        lst_record_end_time.append(["20:00:00"])
+            # Get the date
+            if row[4].value is not None:
+                # Create a new date key
+                row_date = row[4].value.date()
+                comp_5h[row_date] = {"start_time" : [], "end_time" : []}
+                comp_1h30[row_date] = {"start_time" : [], "end_time" : []}
 
-    elif modality == "Stage" :
+                # Variable insert once 9h (or 12h) in the start time for Stage 
+                add_9h = True
+                add_12h30 = True
 
-        if therapy == "PARTNER":
-            for start_time in info_sheet["I"]:
-                # Choose only datetime value to remove the title line
-                if isinstance(start_time.value, time): 
-                    record_1h30_start_time.append(start_time.value.strftime("%H:%M:%S")) 
-                    if start_time.value > datetime.strptime("09:00:00", "%H:%M:%S").time() and add_9h == True: 
-                        record_5h_start_time.append("09:00:00") 
-                        add_9h = False
-                    record_5h_start_time.append(start_time.value.strftime("%H:%M:%S")) 
-            lst_record_start_time.append(record_5h_start_time)
-            lst_record_start_time.append(record_1h30_start_time)
+            # Get the start hours 
+            if isinstance(row[8].value, time):
+                comp_1h30[row_date]["start_time"].append(row[8].value.strftime("%H:%M:%S"))
+                if row[8].value > datetime.strptime("09:00:00", "%H:%M:%S").time() and add_9h == True :
+                    comp_5h[row_date]["start_time"].append("09:00:00") 
+                    add_9h = False
+                comp_5h[row_date]["start_time"].append(row[8].value.strftime("%H:%M:%S")) 
 
-            for end_time in info_sheet["J"] :
-                # Choose only datetime value to remove the title line
-                if isinstance(end_time.value, time): 
-                    record_1h30_end_time.append(end_time.value.strftime("%H:%M:%S")) 
-                    if end_time.value > datetime.strptime("12:30:00", "%H:%M:%S").time() and add_12h30 == True:
-                        record_5h_end_time.append("12:30:00")
-                        add_12h_30 = False
-                    record_5h_end_time.append(end_time.value.strftime("%H:%M:%S")) 
-            lst_record_end_time.append(record_5h_end_time)
-            lst_record_end_time.append(record_1h30_end_time)
+            # Get the end hours 
+            if isinstance(row[9].value, time):
+                comp_1h30[row_date]["end_time"].append(row[9].value.strftime("%H:%M:%S")) 
+                if row[9].value > datetime.strptime("12:30:00", "%H:%M:%S").time() and add_12h30 == True: 
+                    comp_5h[row_date]["end_time"].append("12:30:00")
+                    add_12h30 = False
+                comp_5h[row_date]["end_time"].append(row[9].value.strftime("%H:%M:%S")) 
 
+            if row[4].value is not None: #row[4] correspond to the E column = the date column
+                row_date = row[4].value.date()
+                comp_vie_quot[row_date] = {"start_time" : ["08:00:00"], "end_time" : ["20:00:00"]}
+        
         elif therapy == "HABIT":
-            # For 5h comparison
-            lst_record_start_time.append(["09:00:00","14:30:00"])
-            lst_record_end_time.append(["12:30:00","16:00:00"])   
-            # For 1h30 comparison
-            lst_record_start_time.append(["14:30:00"])  
-            lst_record_end_time.append(["16:00:00"])
+            
+            if row[4].value is not None:
+                # Get the date
+                row_date = row[4].value.date()
+                comp_5h[row_date] = {"start_time" : ["09:00:00","14:30:00"], "end_time" : ["12:30:00","16:00:00"]}
+                comp_1h30[row_date] = {"start_time" : ["14:30:00"], "end_time" : ["16:00:00"]}
 
-    return record_date, lst_record_start_time, lst_record_end_time    
+            if row[4].value is not None: #row[4] correspond to the E column = the date column
+                row_date = row[4].value.date()
+                comp_vie_quot[row_date] = {"start_time" : ["08:00:00"], "end_time" : ["20:00:00"]}
+
+    return comp_vie_quot, comp_1h30, comp_5h  
