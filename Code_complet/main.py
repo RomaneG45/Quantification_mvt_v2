@@ -11,10 +11,11 @@ This file contains the calculation of different metrics.
 
 """ ******************************************************************* Import ********************************************************************************************"""
 import os
-import openpyxl
 from datetime import datetime
+import openpyxl
 from tkinter import messagebox
-import pandas as pd
+import time
+import threading
 
 #from segment_file import
 from interface import create_window
@@ -22,6 +23,7 @@ from agcounts_filter import convert_AC
 from segment_file import segment_time
 from metrics_calculation import metrics
 from save_metrics_in_excel import select_output_file, write_in_file
+from interface import create_progress_interface, update_progress
 
 
 """ **************************************************************** Browse files **************************************************************************"""
@@ -50,6 +52,19 @@ input_folder = create_window()
 AC_for_comp = {"Vie_quotidienne" : {"comp_daily_life" : {}},
                "Stage" : {"comp_5h" : {},
                         "comp_1h30" : {}}}
+
+""" ******************************************************** Progress interface **************************************************************************"""
+
+# Start progress interface in a thread
+idx_interface = 0
+progress_data = {}
+interface_thread = threading.Thread(target=create_progress_interface, args = (progress_data,))
+interface_thread.daemon = True  # Permet de fermer l'interface avec le script principal
+interface_thread.start()
+
+# Attendre que l'interface soit prête
+while "bar" not in progress_data or "interface" not in progress_data:
+    time.sleep(3)
 
 
 for modality in modalities_list:
@@ -113,18 +128,37 @@ for modality in modalities_list:
     file_dom = input_folder + "/" + modality + "_" + dom_UL + ".csv"
     file_non_dom = input_folder + "/" + modality + "_" + non_dom_UL + ".csv"
 
+    #update_progress(idx_interface + 10,progress_data["bar"], progress_data["interface"])
     
-
     # ////////////////////////////////////////////////////////////////////////////////////////// TROP LONG : PEUT ETRE DECOUPER LES FICHIERS AVANT
     #/ /////////////////////////////////////////////// IDEE : AU LIEU DE GARDER LES LIGNE QUE L'ON VEUT? ON SUPPRIME AVEC PANDAS CELLES QUE L'ON NE VEUT PAS, COMME CA ON GARDE UN FICHEIR DONNABLE A AGCOUNTS ET C'EST UN FICHIER PLUS PETIT
     # /////////////////////////////////////////////////////// -> VERIFIER SI C'EST POSSIBLE EN CONSIDERANT LES AUTRES FICHIERS (SAVE METRIC IN EXCEL ...)
+    
+    #Progress interface
+    if modality == "Stage":
+        progress_new_step = True
+    else: 
+        progress_new_step = False
+    progress_data["interface"].after(0, update_progress, 0 , progress_data["bar"], progress_data["interface"], f"Lecture des données des capteurs de '{modality}' ...", progress_data["message_label"])
+
     print("Converting raw data into Activity Counts")
-    dom_counts, non_dom_counts = convert_AC(file_dom, file_non_dom) 
+    dom_counts, non_dom_counts = convert_AC(file_dom, file_non_dom, progress_data) 
+
+    #update_progress(idx_interface + 25,progress_data["bar"], progress_data["interface"])
     
     #***************************************************** Selecting time intervals to be analyzed **************************************************************************
 
     # Loop on the number of epoches in the smallest UL file (dom_AC and non_dom_AC will have the same number of rows)
     for data_idx in range(0, min(len(dom_counts), len(non_dom_counts))) : 
+        
+        # Progress interface
+        if data_idx == 1:
+            progress_new_step = True
+        else:
+            progress_new_step = False
+        progress_data["interface"].after(0, update_progress, 0.5 + (data_idx / (min(len(dom_counts), len(non_dom_counts))))/2 , progress_data["bar"], progress_data["interface"], f"Calcul des métriques pour '{modality}' ...",  progress_data["message_label"])
+        
+
         # Get the date and hour of the activity count
         count_date = dom_counts["Timestamp"][data_idx].date()
         #/////////////////////////////////////////////////////////////////: Si les counts_date ne se suivent pas -> indiquer pas de données pour se jour (au cas ou il y ai des jours manquant)
@@ -185,14 +219,14 @@ for modality in modalities_list:
                 intensity_metrics = [dict_metrics['dom_mean_AC'], dict_metrics['non_dom_mean_AC'], dict_metrics['mean_bilateral_magnitude'], dict_metrics['mean_magnitude_ratio'], dict_metrics['maui'], dict_metrics['baui']]
                 record_time = len(dom_AC) / 60 # time in min
                 write_in_file(output_wb, output_file_path, record_time, idx_day, day, time_metrics, intensity_metrics)
+            
+            #Update loop values
             idx_day += 1 
+            #update_progress(idx_interface + 15,progress_data["bar"], progress_data["interface"])
 
     #Vérification
     
-    if dom_AC != []:
-        print(f"longueur heure de début : {len(non_dom_AC)}")
-        print(f"longueur heure de fin : {len(non_dom_AC)}")
-    else:
+    if dom_AC == []:
         messagebox.showinfo("Finish",f"Il y a une erreur : les dates des capteurs et du fichier Info ne correspondent pas pour la modalité : {modality}" )
         print(f"Il y a une erreur : les dates des capteurs et du fichier Info ne correspondent pas pour la modalité : {modality}")
 
@@ -207,6 +241,5 @@ for modality in modalities_list:
             # Day is finished
             print("Calculating metrics")
     """
-
 # Notify the user that the calculations are finished
 messagebox.showinfo("Finish", f"The results are available in the folder : {input_folder}")

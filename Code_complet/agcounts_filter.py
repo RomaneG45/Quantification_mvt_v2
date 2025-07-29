@@ -5,6 +5,9 @@ This code is extracted from github "https://github.com/actigraph/agcounts", and 
 from agcounts.extract import get_counts
 import pandas as pd
 import numpy as np
+from interface import update_progress
+
+
 
 def get_counts_csv(
     file,
@@ -13,9 +16,12 @@ def get_counts_csv(
     fast: bool = True,
     verbose: bool = False,
     time_column: str = None,
+    progress_data: dict = None,
+    progress_idx: int = 0,
 ):
     if verbose:
         print("Reading in CSV", flush=True)
+        progress_data["interface"].after(0, update_progress, progress_idx , progress_data["bar"], progress_data["interface"], f"Convertion des données brutes en array ...", progress_data["message_label"])
     raw = pd.read_csv(file, skiprows=10,decimal=",")# skiprows = 0 if the file has no header, skiprows = n if the file has n header rows
     if time_column is not None:
         ts = raw[time_column]
@@ -27,9 +33,11 @@ def get_counts_csv(
     raw = raw[["Accelerometer X", "Accelerometer Y", "Accelerometer Z"]].astype(float)
     if verbose:
         print("Converting to array", flush=True)
+        progress_data["interface"].after(0, update_progress, progress_idx+(1/12) , progress_data["bar"], progress_data["interface"], f"Convertion en Activity Counts ...", progress_data["message_label"])
     raw = np.array(raw)
     if verbose:
         print("Getting Counts", flush=True)
+        progress_data["interface"].after(0, update_progress, progress_idx+(2/12) , progress_data["bar"], progress_data["interface"], f"Convertion en Activity Counts ...", progress_data["message_label"])
     counts = get_counts(raw, freq=freq, epoch=epoch, fast=fast)
     del raw
     counts = pd.DataFrame(counts, columns=["Axis1", "Axis2", "Axis3"])
@@ -49,17 +57,19 @@ def convert_counts_csv(
     epoch: int=60,
     verbose: bool = False,
     time_column: str = None,
+    progress_data: dict = None,
+    progress_idx: int = 0,
 ):
     counts = get_counts_csv(
-        file, freq=freq, epoch=epoch, verbose=verbose, time_column=time_column
+        file, freq=freq, epoch=epoch, verbose=verbose, time_column=time_column, progress_data=progress_data, progress_idx=progress_idx
     )
     counts.to_csv(outfile, index=False)
     return counts
 
 
-def convert_AC(file_dom, file_non_dom):
+def convert_AC(file_dom, file_non_dom, progress_data=None):
 
-    dom_counts = get_counts_csv(file_dom, freq=100, epoch=1)
+    dom_counts = get_counts_csv(file_dom, freq=100, epoch=1, progress_data=progress_data, progress_idx=1/12)
     dom_counts = convert_counts_csv(
         file_dom,
         outfile="Activity_counts_files/dom_counts.csv",
@@ -67,9 +77,11 @@ def convert_AC(file_dom, file_non_dom):
         epoch=1,
         verbose=True,
         time_column="Timestamp",
+        progress_data=progress_data,
+        progress_idx=1/12
     )
 
-    non_dom_counts = get_counts_csv(file_non_dom, freq=100, epoch=1)
+    non_dom_counts = get_counts_csv(file_non_dom, freq=100, epoch=1, progress_data=progress_data, progress_idx=4/12)
     non_dom_counts = convert_counts_csv(
         file_non_dom,
         outfile="Activity_counts_files/non_dom_counts.csv",
@@ -77,6 +89,8 @@ def convert_AC(file_dom, file_non_dom):
         epoch=1,
         verbose=True,
         time_column="Timestamp",
+        progress_data=progress_data,
+        progress_idx=4/12
     )
 
 
