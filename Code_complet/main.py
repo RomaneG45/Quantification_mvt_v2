@@ -39,16 +39,13 @@ output_dir = "Activity_counts_files"
 # Create an activity count folder to register the ones created in agcounts_filter.py
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
-""" ******************************************************** Getting info from input folder **************************************************************************"""
+
+""" ******************************************************** Selecting input folder **************************************************************************"""
 
 modalities_list = ["Vie_quotidienne", "Stage"]
 input_folder = create_window()
 
-# ---Nouveau code (16/07/25)
 # Dict that register the dom and non dom AC for the different time lapse
-"""AC_for_comp = {"comp_daily_life" : {},
-                "comp_5h" : {},
-                "comp_1h30" : {}}"""
 AC_for_comp = {"Vie_quotidienne" : {"comp_daily_life" : {}},
                "Stage" : {"comp_5h" : {},
                         "comp_1h30" : {}}}
@@ -59,19 +56,20 @@ AC_for_comp = {"Vie_quotidienne" : {"comp_daily_life" : {}},
 idx_interface = 0
 progress_data = {}
 interface_thread = threading.Thread(target=create_progress_interface, args = (progress_data,))
-interface_thread.daemon = True  # Permet de fermer l'interface avec le script principal
+interface_thread.daemon = True  # Close the interface with the main script
 interface_thread.start()
 
-# Attendre que l'interface soit prête
+# Wait for the progress interface to be created
 while "bar" not in progress_data or "interface" not in progress_data:
     time.sleep(3)
 
+""" ******************************************************** Getting info from input folder **************************************************************************"""
 
 for modality in modalities_list:
     # Select the Info file in the input folder
     if  modality + "_Info.xlsx" not in os.listdir(input_folder):
         # Notify the user that there is no info file in the inupt folder
-        messagebox.showinfo("Finish", f"There is no file {modality + '_Info.xlsx'} in the selected folder")
+        messagebox.showinfo("Fin", f"Aucun fichier {modality + '_Info.xlsx'} dans le dossier sélectionné")
     input_info_file = input_folder + "/" + modality + "_Info.xlsx"
 
     # Load excel file containing the information
@@ -83,6 +81,10 @@ for modality in modalities_list:
     child_id = str(info_sheet["A2"].value)
     therapy = str(info_sheet["B2"].value)
     non_dom_UL = str(info_sheet["D2"].value)
+
+    # Notify the user if no child ID is provided
+    if child_id == "None" :
+        messagebox.showinfo("Information manquante", f"L'identifiant de l'enfant n'est pas renseigné dans le fichier {modality}_Info.xlsx.")
 
     # Define dominant UL
     ul_list = ["Droit", "Gauche"]
@@ -103,27 +105,27 @@ for modality in modalities_list:
     
     if modality == "Stage":
         # Create the output file for the 5h comparison
-        output_comp_5h_file_path = input_folder + "/" + "Test_output_comp_5h.xlsx"
+        output_comp_5h_file_path = input_folder + "/" + "Résultats_comp_5h.xlsx"
         output_comp_5h_wb = select_output_file(output_comp_5h_file_path, child_id, therapy)
 
         # Create the output file for the 1h30 comparison
-        output_comp_1h30_file_path = input_folder + "/" + "Test_output_comp_1h30.xlsx"
+        output_comp_1h30_file_path = input_folder + "/" + "Résultats_comp_1h30.xlsx"
         output_comp_1h30_wb = select_output_file(output_comp_1h30_file_path, child_id, therapy)
 
     elif modality == "Vie_quotidienne":
         # Create the output file for the daily life comparison
-        output_daily_file_path = input_folder + "/" + "Test_output_comp_daily_life.xlsx"
+        output_daily_file_path = input_folder + "/" + "Résultats_comp_daily_life.xlsx"
         output_daily_wb = select_output_file(output_daily_file_path, child_id, therapy)
 
 
-    #****************************************************** Getting AC ********************************************************************************************
+    """****************************************************** Getting AC ********************************************************************************************"""
 
     if  modality + "_" + dom_UL + ".csv" not in os.listdir(input_folder):
         # Notify the user that there is no dom file in the inupt folder
-        messagebox.showinfo("Finish", f"There is no file {modality + '_' + dom_UL + '.csv'} in the selected folder")
+        messagebox.showinfo("Fin", f"Aucun fichier {modality + '_' + dom_UL + '.csv'} dans le dossier sélectionné")
     if  modality + "_" + non_dom_UL + ".csv" not in os.listdir(input_folder):
         # Notify the user that there is no non_dom file in the inupt folder
-        messagebox.showinfo("Finish", f"There is no file {modality + '_' + non_dom_UL + '.csv'} in the selected folder")
+        messagebox.showinfo("Fin", f"Aucun fichier {modality + '_' + non_dom_UL + '.csv'} dans le dossier sélectionné")
 
     file_dom = input_folder + "/" + modality + "_" + dom_UL + ".csv"
     file_non_dom = input_folder + "/" + modality + "_" + non_dom_UL + ".csv"
@@ -139,14 +141,12 @@ for modality in modalities_list:
         progress_new_step = True
     else: 
         progress_new_step = False
-    progress_data["interface"].after(0, update_progress, 0 , progress_data["bar"], progress_data["interface"], f"Lecture des données des capteurs de '{modality}' ...", progress_data["message_label"])
+    progress_data["interface"].after(0, update_progress, 0 , progress_data["bar"], progress_data["interface"], f"Lecture des données des capteurs de '{modality}' ...", progress_data["message_label"],progress_data["progress_title"])
 
     print("Converting raw data into Activity Counts")
     dom_counts, non_dom_counts = convert_AC(file_dom, file_non_dom, progress_data) 
 
-    #update_progress(idx_interface + 25,progress_data["bar"], progress_data["interface"])
-    
-    #***************************************************** Selecting time intervals to be analyzed **************************************************************************
+    """***************************************************** Selecting the AC from the time wanted intervals **************************************************************************"""
 
     # Loop on the number of epoches in the smallest UL file (dom_AC and non_dom_AC will have the same number of rows)
     for data_idx in range(0, min(len(dom_counts), len(non_dom_counts))) : 
@@ -156,7 +156,7 @@ for modality in modalities_list:
             progress_new_step = True
         else:
             progress_new_step = False
-        progress_data["interface"].after(0, update_progress, 0.5 + (data_idx / (min(len(dom_counts), len(non_dom_counts))))/2 , progress_data["bar"], progress_data["interface"], f"Calcul des métriques pour '{modality}' ...",  progress_data["message_label"])
+        progress_data["interface"].after(0, update_progress, 0.5 + (data_idx / (min(len(dom_counts), len(non_dom_counts))))/2 , progress_data["bar"], progress_data["interface"], f"Calcul des métriques pour '{modality}' ...",  progress_data["message_label"], progress_data["progress_title"])
         
 
         # Get the date and hour of the activity count
@@ -188,8 +188,7 @@ for modality in modalities_list:
                             AC_for_comp[modality][time_lapse_name][count_date]["dom_AC"].append(dom_counts.loc[data_idx, "AC"])
                             AC_for_comp[modality][time_lapse_name][count_date]["non_dom_AC"].append(non_dom_counts.loc[data_idx, "AC"])
 
-
-    
+    """************************************************* Explore the AC lists for the different time laps to calculate the metrics ********************************************************"""
     dom_AC = []
     dom_non_AC = []
     # Explore the AC lists for the different time laps to calculate the metrics
@@ -202,7 +201,6 @@ for modality in modalities_list:
 
             if dom_AC != [] and non_dom_AC != []:
 
-
                 #****************************** Metrics calculation for the selected time lapse ******************************
                 dict_metrics = metrics(dom_AC, non_dom_AC)
                 
@@ -211,10 +209,10 @@ for modality in modalities_list:
                 print(f"Metrics saved for the day {count_date}\n")
 
                 
-                output_file_path = input_folder + "/" + "Test_output_" + comparison + ".xlsx" 
+                output_file_path = input_folder + "/" + "Résultats_" + comparison + ".xlsx" 
                 output_wb = openpyxl.load_workbook(output_file_path)
 
-                #******************************* Save metrics in an excel file ******************************
+                #******************************* Save metrics in an excel file ***********************************************
                 time_metrics = [dict_metrics['dom_AD'], dict_metrics['non_dom_AD'],dict_metrics['bimanual_AD'], dict_metrics['use_ratio_time']]
                 intensity_metrics = [dict_metrics['dom_mean_AC'], dict_metrics['non_dom_mean_AC'], dict_metrics['mean_bilateral_magnitude'], dict_metrics['mean_magnitude_ratio'], dict_metrics['maui'], dict_metrics['baui']]
                 record_time = len(dom_AC) / 60 # time in min
@@ -222,24 +220,14 @@ for modality in modalities_list:
             
             #Update loop values
             idx_day += 1 
-            #update_progress(idx_interface + 15,progress_data["bar"], progress_data["interface"])
 
-    #Vérification
-    
+    # Notify the user if the recorded hours and the hours in the info file do not match 
     if dom_AC == []:
-        messagebox.showinfo("Finish",f"Il y a une erreur : les dates des capteurs et du fichier Info ne correspondent pas pour la modalité : {modality}" )
-        print(f"Il y a une erreur : les dates des capteurs et du fichier Info ne correspondent pas pour la modalité : {modality}")
+        messagebox.showinfo("Fin",f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}" )
+        print(f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}")
 
     algo_end_time= datetime.now()
     print(f"L'algo dure : {algo_end_time-algo_start_time}")
-    
 
-    #***************************************************** Segmenting the data **************************************************************************
-    """
-        # Record's end : Data reaching the max_time (20h) or dead battery 
-        elif (sec_count == max_time[idx_record] or ((min_time[idx_record] <= sec_count < max_time[idx_record]) and (sec_count == min(len(dom_counts), len(non_dom_counts)) - 1))): # and count_date == record_date[idx_record] : MARCHE PAS CAR SI LA 1E LIGNE A UNE MAUVAISE DATE IDX_RECORD N'AUGMENTE JAMAIS
-            # Day is finished
-            print("Calculating metrics")
-    """
 # Notify the user that the calculations are finished
-messagebox.showinfo("Finish", f"The results are available in the folder : {input_folder}")
+messagebox.showinfo("Fin", f"Les résultats sont disponnibles dans le dossier : {input_folder}")

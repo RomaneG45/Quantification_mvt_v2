@@ -29,8 +29,8 @@ def sec_metrics(dom_AC, non_dom_AC):
 
         #Magnitude Ratio 
         #*******Bailey RR 2014 calculation: +1 for each AC to avoid dividing by 0**********
-        if (non_dom_AC[idx_sec] != 0) & (dom_AC[idx_sec] != 0) :
-            magnitude_ratio.append(np.log((non_dom_AC[idx_sec] + 1) / (dom_AC[idx_sec] + 1)))
+        #if (non_dom_AC[idx_sec] != 0) & (dom_AC[idx_sec] != 0) :
+        magnitude_ratio.append(np.log((non_dom_AC[idx_sec] + 1) / (dom_AC[idx_sec] + 1)))
 
         #Bilateral magnitude 
         bilateral_magnitude.append(non_dom_AC[idx_sec] + dom_AC[idx_sec])
@@ -91,6 +91,7 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude):
     :param bilateral magnitude : list of bilateral magnitude per seconde
     :return dom_AD : float of dominant active duration
     :return non_dom_AD : float of non dominant active duration
+    return bimanual_AD : float of bimanual active duration
     :return use_ratio_time : float of use ratio time
     :return dom_mean_AC : float of dominant mean activity counts per second
     :return non_dom_mean_AC : float of non dominant mean activity counts per second

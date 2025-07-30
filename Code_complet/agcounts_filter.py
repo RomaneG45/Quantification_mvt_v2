@@ -21,7 +21,7 @@ def get_counts_csv(
 ):
     if verbose:
         print("Reading in CSV", flush=True)
-        progress_data["interface"].after(0, update_progress, progress_idx , progress_data["bar"], progress_data["interface"], f"Convertion des données brutes en array ...", progress_data["message_label"])
+        progress_data["interface"].after(0, update_progress, progress_idx , progress_data["bar"], progress_data["interface"], f"Conversion des données brutes en array ...", progress_data["message_label"], progress_data["progress_title"])
     raw = pd.read_csv(file, skiprows=10,decimal=",")# skiprows = 0 if the file has no header, skiprows = n if the file has n header rows
     if time_column is not None:
         ts = raw[time_column]
@@ -33,11 +33,11 @@ def get_counts_csv(
     raw = raw[["Accelerometer X", "Accelerometer Y", "Accelerometer Z"]].astype(float)
     if verbose:
         print("Converting to array", flush=True)
-        progress_data["interface"].after(0, update_progress, progress_idx+(1/12) , progress_data["bar"], progress_data["interface"], f"Convertion en Activity Counts ...", progress_data["message_label"])
+        progress_data["interface"].after(0, update_progress, progress_idx+(1/12) , progress_data["bar"], progress_data["interface"], f"Conversion en Activity Counts ...", progress_data["message_label"],progress_data["progress_title"])
     raw = np.array(raw)
     if verbose:
         print("Getting Counts", flush=True)
-        progress_data["interface"].after(0, update_progress, progress_idx+(2/12) , progress_data["bar"], progress_data["interface"], f"Convertion en Activity Counts ...", progress_data["message_label"])
+        progress_data["interface"].after(0, update_progress, progress_idx+(2/12) , progress_data["bar"], progress_data["interface"], f"Conversion en Activity Counts ...", progress_data["message_label"], progress_data["progress_title"])
     counts = get_counts(raw, freq=freq, epoch=epoch, fast=fast)
     del raw
     counts = pd.DataFrame(counts, columns=["Axis1", "Axis2", "Axis3"])

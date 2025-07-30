@@ -9,16 +9,18 @@ from customtkinter import CTkImage
 folder = ""
 
 # Folder selection function
-def choose_folder():
+def choose_folder(window):
     """Function to open a dialog for folder selection and update the label with the selected folder path.
+    :param window: The main application window.
     :return: The selected folder path."""
     try:
         global folder
         folder = filedialog.askdirectory()
         if folder:
             folder_label.configure(text=folder, width=200, height=40, anchor="nw", wraplength=280)
+            window.geometry("630x220")
         else:
-            folder_label.configure(text="No Folder Chosen")
+            folder_label.configure(text="Aucun dossier sélectionné")
 
         return folder
     except Exception as e:
@@ -48,11 +50,6 @@ def create_window():
         window.title("Actinalyseur")
         window.geometry("500x220")
 
-
-        """# Selection folder button
-        choose_button = ctk.CTkButton(window, text="Choose File", command=choose_folder)
-        choose_button.pack(pady=(5, 5))"""
-        """De la"""
         # Load image
         file_img = CTkImage(Image.open("C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v2/Quantification_mvt_v2/Code_complet/folder_image.png"), size=(90, 90))  # ajuste la taille selon ton image
 
@@ -77,22 +74,21 @@ def create_window():
         frame_calculation_button.pack(fill="x", expand=True)#, pady = (20,0))
 
         # Label instruction
-        instruction_label = ctk.CTkLabel(frame_please, text="Please upload the child folder", font=("Arial", 14, "italic"), anchor="w", justify="left")
+        instruction_label = ctk.CTkLabel(frame_please, text="Choisir le dossier de l'enfant", font=("Arial", 14, "italic"), anchor="w", justify="left")
         instruction_label.pack(side="left", padx=10)
 
         # Bouton de sélection
-        choose_button = ctk.CTkButton(frame_choose_button, text="Choose File", command=choose_folder, fg_color = "transparent",border_width=2, border_color = "#2ecc71", text_color = "#2ecc71", hover_color = "#DFDFDF" , width = 120, height = 40)
+        choose_button = ctk.CTkButton(frame_choose_button, text="Choisir un dossier", command=lambda:choose_folder(window), fg_color = "transparent",border_width=2, border_color = "#2ecc71", text_color = "#2ecc71", hover_color = "#DFDFDF" , width = 120, height = 40)
         choose_button.pack(side="left", padx=5)
-        """jusque la """
 
 
         # Label to display the selected folder
         global folder_label
-        folder_label= ctk.CTkLabel(frame_choose_button, text="No Folder Chosen", text_color="gray", anchor="w", width=300)
+        folder_label= ctk.CTkLabel(frame_choose_button, text="Aucun dossier choisi", text_color="gray", anchor="w", width=300)
         folder_label.pack(side="left", padx=(10,0))#pady=(0, 20))
 
         # Button to launch calculations
-        calculation_button = ctk.CTkButton(frame_calculation_button, text="Metrics calculation", command= lambda: start_calculation(window), fg_color="#2ecc71", hover_color="#27ae60")
+        calculation_button = ctk.CTkButton(frame_calculation_button, text="Calculer les métriques", command= lambda: start_calculation(window), fg_color="#2ecc71", hover_color="#27ae60")
         calculation_button.pack(side = "right", padx = (0,20), pady=(20,20))
 
         # Run the main loop
@@ -104,7 +100,7 @@ def create_window():
         print("Erreur dans le thread interface: ", e)
 
 
-def update_progress(idx_interface,progress_bar, progress_interface, message, message_label):
+def update_progress(idx_interface,progress_bar, progress_interface, message, message_label, progress_title):
     """Function to update the progress bar.
     :param idx_interface: The current index of the progress.
     :param progress_bar: The progress bar widget.
@@ -121,10 +117,16 @@ def update_progress(idx_interface,progress_bar, progress_interface, message, mes
             message_label.configure(text = message)
 
         else:
-            progress_bar.set( idx_interface) 
+            progress_bar.set(idx_interface) 
             progress_interface.update_idletasks()
+            # Update the title interface (first or second modality)
+            if message_label.cget("text") != "Lancement ...":
+                progress_title.configure(text = "Progression 2/2")
             # Update the message in the interface
             message_label.configure(text = message)
+            
+
+
     except Exception as e:
         print("Erreur dans le thread interface: ", e)
 
@@ -140,7 +142,7 @@ def create_progress_interface(progress_dict):
         progress_interface.title("Actinalyseur")
 
         # Title label
-        title_label = ctk.CTkLabel(progress_interface, text="Progression", font=("Arial", 20, "bold"))
+        title_label = ctk.CTkLabel(progress_interface, text="Progression 1/2", font=("Arial", 20, "bold"))
         title_label.pack(pady = (20, 10))
 
         # Create a progress bar
@@ -150,7 +152,7 @@ def create_progress_interface(progress_dict):
         # Create the message in the interface
         message_frame = ctk.CTkFrame(progress_interface, fg_color= "transparent" )
         message_frame.pack()
-        message_label = ctk.CTkLabel(message_frame, text = "Starting ...", font=("Arial", 12))
+        message_label = ctk.CTkLabel(message_frame, text = "Lancement ...", font=("Arial", 12))
         message_label.pack()
 
         # Initialize the progress bar
@@ -159,6 +161,7 @@ def create_progress_interface(progress_dict):
         progress_dict["bar"] = progress_bar
         progress_dict["interface"] = progress_interface
         progress_dict["message_label"] = message_label
+        progress_dict["progress_title"] = title_label
 
 
         progress_interface.mainloop()

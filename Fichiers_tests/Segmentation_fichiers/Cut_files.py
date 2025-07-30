@@ -6,14 +6,14 @@ from pandas import DataFrame
 #-----------------------------------------------------------A COMPLETER---------------------------------------------------------------------------------
 
 #Time interval to be cut
-min_time = "2025-04-15T13:48:00.0000000Z"
-max_time = "2025-04-15T15:18:00.0000000Z"
+min_time = "2024-12-05T09:00:00.0000000Z"
+max_time = "2024-12-05T11:00:00.0000000Z"
 #Files paths
-path_left_wrist = "C:/Users/BEaCHILD3/Documents/Stage_Romane/Donnees_actilife/Enregistrement_15_04_2025/TAS1D48140076_(2025-04-16)-IMU-Copie.csv" 
-path_right_wrist = "C:/Users/BEaCHILD3/Documents/Stage_Romane/Donnees_actilife/Enregistrement_15_04_2025/TAS1H46190449_(2025-04-16)-IMU-Copie.csv"
+path_left_wrist = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 1/Vie_quotidienne_Droit.csv" 
+path_right_wrist = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 1/Vie_quotidienne_Gauche.csv"
 #New name : indicate the path
-new_name_left ="C:/Users/BEaCHILD3/Documents/Stage_Romane/Donnees_actilife/Enregistrement_15_04_2025/TAS1D48140076_(2025-04-16)-IMU_Adele_13h48_15h18.csv" 
-new_name_right = "C:/Users/BEaCHILD3/Documents/Stage_Romane/Donnees_actilife/Enregistrement_15_04_2025/TAS1H46190449_(2025-04-16)-IMU_Adele_13h48_15h18.csv"
+new_name_left ="C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 2/Vie_quotidienne_Droit_.csv" 
+new_name_right = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 2/Vie_quotidienne_Gauche_.csv"
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------
 
