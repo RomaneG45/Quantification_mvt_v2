@@ -9,7 +9,7 @@
 - agcounts== 0.2.6 
 
 ### Guide d'installation
-Téléchargez le dossier "Code_complet" puis executez la commande suivante dans le terminal de l'ordinateur "pyinstaller main.spec". Le fichier éxecutable se télécharge dans le dossier "dist" (dossier Code_complet), puis peut être directement utilisé en double cliquant sur l'icône.
+Téléchargez le dossier "Code_complet" puis executez la commande suivante dans le terminal de l'ordinateur, à l'endroit où se trouve le dossier téléchargé : "pyinstaller main.spec". Le fichier éxecutable se télécharge dans le dossier "dist" (dossier Code_complet), puis peut être directement utilisé en double cliquant sur l'icône.
 
 ### Structure des dossiers
 Code complet : Dossier contenant les scripts actuels
