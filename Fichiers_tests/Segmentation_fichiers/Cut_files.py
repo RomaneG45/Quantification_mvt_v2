@@ -6,14 +6,14 @@ from pandas import DataFrame
 #-----------------------------------------------------------A COMPLETER---------------------------------------------------------------------------------
 
 #Time interval to be cut
-min_time = "2024-12-05T09:00:00.0000000Z"
-max_time = "2024-12-05T11:00:00.0000000Z"
+min_time = "2025-07-09T12:30:00.0000000Z"
+max_time = "2025-07-09T13:30:00.0000000Z"
 #Files paths
-path_left_wrist = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 1/Vie_quotidienne_Droit.csv" 
-path_right_wrist = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 1/Vie_quotidienne_Gauche.csv"
+path_left_wrist = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 1/Stage_Droit.csv"
+path_right_wrist = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 1/Stage_Gauche.csv"
 #New name : indicate the path
-new_name_left ="C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 2/Vie_quotidienne_Droit_.csv" 
-new_name_right = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 2/Vie_quotidienne_Gauche_.csv"
+new_name_left ="C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 3/Stage_2_Droit.csv" 
+new_name_right = "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Ex_arborescence/Enfant 3/Stage_2_Gauche.csv"
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------
 

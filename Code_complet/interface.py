@@ -1,9 +1,11 @@
-"""This file contains the interface for the Actinalyseur application, allowing users to select a folder and initiate calculations."""
+"""This file contains the interface for the Actinalyseur application, allowing users to select a folder and initiate calculations.
+Called in main.py and agcoounts_filter.py"""
 
 import customtkinter as ctk
-from tkinter import filedialog
+from tkinter import filedialog, PhotoImage
 from PIL import Image
 from customtkinter import CTkImage
+import os
 
 # Global variable to store the selected folder path
 folder = ""
@@ -47,11 +49,17 @@ def create_window():
 
         # Main window
         window = ctk.CTk()
+        # Actinalyseur icon
+        script_dir = os.path.dirname(os.path.abspath(__file__)) 
+        image_path = os.path.join(script_dir, "Images", "Actinalyseur.png")
+        icon = PhotoImage(file=image_path)
+        window.iconphoto(True, icon)
         window.title("Actinalyseur")
         window.geometry("500x220")
 
         # Load image
-        file_img = CTkImage(Image.open("C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v2/Quantification_mvt_v2/Code_complet/folder_image.png"), size=(90, 90))  # ajuste la taille selon ton image
+        folder_image_path = os.path.join(script_dir, "Images", "folder_image.png")
+        file_img = CTkImage(Image.open(folder_image_path), size=(90, 90))  # ajuste la taille selon ton image
 
         # Horizontal frame for image + button + label
         selection_frame = ctk.CTkFrame(window, fg_color= "transparent" )
@@ -102,11 +110,11 @@ def create_window():
 
 def update_progress(idx_interface,progress_bar, progress_interface, message, message_label, progress_title):
     """Function to update the progress bar.
-    :param idx_interface: The current index of the progress.
-    :param progress_bar: The progress bar widget.
-    :param progress_interface: ctk.CTK() The main interface window.
+    :param idx_interface: Int of the current index of the progress bar.
+    :param progress_bar:  ctk.CTkProgressBar The progress bar widget.
+    :param progress_interface: ctk.CTK The main interface window.
     :param message: Str message to display in the interface windox.
-    :param message_label: The label widget to display the message."""
+    :param message_label: ctk.CTkLabel The label widget to display the message."""
     # Update the progress bar value
     #print(f" type de idx_interface : {type(idx_interface)}")
     try:
@@ -119,9 +127,9 @@ def update_progress(idx_interface,progress_bar, progress_interface, message, mes
         else:
             progress_bar.set(idx_interface) 
             progress_interface.update_idletasks()
-            # Update the title interface (first or second modality)
-            if message_label.cget("text") != "Lancement ...":
-                progress_title.configure(text = "Progression 2/2")
+            # Update the title interface (first or second)
+            #if message_label.cget("text") != "Lancement ...":
+            progress_title.configure(text = f"Progression")
             # Update the message in the interface
             message_label.configure(text = message)
             
@@ -138,11 +146,16 @@ def create_progress_interface(progress_dict):
     try : 
         # Initialize the CustomTkinter app
         progress_interface = ctk.CTk()
+        # Actinalyseur icon
+        script_dir = os.path.dirname(os.path.abspath(__file__)) 
+        icon_path = os.path.join(script_dir, "Images", "Actinalyseur.png")
+        icon = PhotoImage(file=icon_path)
+        progress_interface.iconphoto(True, icon)
         progress_interface.geometry("400x200")
         progress_interface.title("Actinalyseur")
 
         # Title label
-        title_label = ctk.CTkLabel(progress_interface, text="Progression 1/2", font=("Arial", 20, "bold"))
+        title_label = ctk.CTkLabel(progress_interface, text="Progression", font=("Arial", 20, "bold"))
         title_label.pack(pady = (20, 10))
 
         # Create a progress bar

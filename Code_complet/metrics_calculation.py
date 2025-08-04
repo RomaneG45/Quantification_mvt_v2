@@ -91,8 +91,9 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude):
     :param bilateral magnitude : list of bilateral magnitude per seconde
     :return dom_AD : float of dominant active duration
     :return non_dom_AD : float of non dominant active duration
-    return bimanual_AD : float of bimanual active duration
+    :return bimanual_AD : float of bimanual active duration
     :return use_ratio_time : float of use ratio time
+    :return use_ratio_intensity : float of use ratio intensity
     :return dom_mean_AC : float of dominant mean activity counts per second
     :return non_dom_mean_AC : float of non dominant mean activity counts per second
     :return mean_bilateral_magnitude : float of mean bilateral magnitude
@@ -142,13 +143,16 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude):
     dom_mean_AC = np.mean(dom_AC)
     non_dom_mean_AC = np.mean(non_dom_AC) 
 
+    #Use ratio with Mean AC
+    use_ratio_intensity = non_dom_mean_AC / dom_mean_AC
+
     #Mean Bilateral Magnitude
     mean_bilateral_magnitude = np.mean(bilateral_magnitude)
 
     #Mean Magnitude Ratio 
     mean_magnitude_ratio = np.mean(magnitude_ratio)
 
-    return dom_AD, non_dom_AD, bimanual_AD, use_ratio_time, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio
+    return dom_AD, non_dom_AD, bimanual_AD, use_ratio_time, use_ratio_intensity, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio
 
 
 def metrics(dom_AC, non_dom_AC):
@@ -159,13 +163,14 @@ def metrics(dom_AC, non_dom_AC):
     """
     magnitude_ratio, bilateral_magnitude = sec_metrics(dom_AC, non_dom_AC)
     maui, baui = maui_baui(dom_AC, non_dom_AC)
-    dom_AD, non_dom_AD, bimanual_AD, use_ratio_time, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio = mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude)
+    dom_AD, non_dom_AD, bimanual_AD, use_ratio_time, use_ratio_intensity, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio = mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude)
 
     df_metrics = {
         "dom_AD": dom_AD,
         "non_dom_AD": non_dom_AD,
         "bimanual_AD" : bimanual_AD,
         "use_ratio_time": use_ratio_time,
+        "use_ratio_intensity": use_ratio_intensity,
         "dom_mean_AC": dom_mean_AC,
         "non_dom_mean_AC": non_dom_mean_AC,
         "mean_bilateral_magnitude": mean_bilateral_magnitude,

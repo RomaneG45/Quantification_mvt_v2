@@ -22,7 +22,8 @@ datas = [
     ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/time_frequency/__init__.pyi', 'mne/time_frequency'),
     ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/utils/__init__.pyi', 'mne/utils'),
     ('C:/Users/roman/AppData/Local/Programs/Python/Python311/Lib/site-packages/mne/viz/__init__.pyi', 'mne/viz'),
-    ('C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v2/Quantification_mvt_v2/Code_complet/folder_image.png','Code_complet'),
+    ('C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Code_complet/Images/folder_image.png','Images'),
+    ('C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Code_complet/Images/Actinalyseur.png','Images'),
 ]
 
 a = Analysis(
@@ -46,17 +47,18 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='main',
+    name='Actinalyseur',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon= "C:/Users/roman/Documents/BEaCHILD/Quantification_mvt_v3/Quantification_mvt_v3/Code_complet/Images/Actinalyseur.ico"
 )

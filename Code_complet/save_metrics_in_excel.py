@@ -31,7 +31,7 @@ def select_output_file(file_path, ID, therapy_name):
     my_sheet = my_wb.active
 
     # Initialize column info : define one metrics per row
-    lst_info_col = ["ID du patient","Groupe","Jours", "Durée d'enregistrement (en min)", "Métriques de temps","Dominant active duration (en %)","Non dominant active duration (en %)","Bilateral active duration (en %)", "Use ratio","Métriques d'intensité","Dominant mean AC","Non dominant mean AC","Mean bilateral magnitude","Magnitude ratio","MAUI","BAUI"]
+    lst_info_col = ["ID du patient","Groupe","Jours", "Durée d'enregistrement (en min)", "Métriques de temps","Dominant active duration (en %)","Non dominant active duration (en %)","Bilateral active duration (en %)", "Time use ratio","Métriques d'intensité","Dominant mean AC","Non dominant mean AC","Mean bilateral magnitude","Magnitude ratio","MAUI","BAUI", "Intensity Use ratio"]
     for idx in range(1, len(lst_info_col) + 1):
         cell = my_sheet.cell(row = idx, column = 1)
         cell.value = lst_info_col[idx-1]
