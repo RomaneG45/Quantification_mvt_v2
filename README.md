@@ -22,7 +22,9 @@ Code complet : Dossier contenant les scripts actuels
   - Activity counts files : Dossier contenant les fichiers de sauvegarde des activity counts après traitement des données brutes dans le programme principal.
       - dom_counts : AC du membre dominant
       - non_dom_counts : AC du membre atteint
+  
 Fichiers_tests : Dossier contenant les fichiers de test qui ont été utilisés pour écrire les scripts actuels.
+
 Ex_arborescence : Dossier contenant des exemples de fichiers d'entrée. Utilisés pour tester le fonctionnement des scripts actuels.
 
 ## Entrée 
