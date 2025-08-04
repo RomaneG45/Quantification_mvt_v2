@@ -1,5 +1,5 @@
 """This file contains the interface for the Actinalyseur application, allowing users to select a folder and initiate calculations.
-Called in main.py and agcoounts_filter.py"""
+Called in main.py and agcounts_filter.py"""
 
 import customtkinter as ctk
 from tkinter import filedialog, PhotoImage
