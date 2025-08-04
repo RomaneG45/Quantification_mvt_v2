@@ -14,9 +14,9 @@ Téléchargez le dossier "Code_complet" puis executez la commande suivante dans 
 ### Structure des dossiers
 Code complet : Dossier contenant les scripts actuels
   - agcounts_filter.py : Fichier de traitement permettant de transformer les données brutes en activity count (transformation en activity count). Details : https://github.com/actigraph/agcounts.git
-      - get_counts_csv()
-      - convert_counts_csv()
-      - convert_AC()
+      - get_counts_csv() : Récupération des données brutes dans les fichiers d'entrées
+      - convert_counts_csv() : Convertion des données brutes en activity counts
+      - convert_AC() : méthode principale appelant gets_counts_csv() et convert_counts_csv()
         
   - interface.py : Interface de l'application Actinalyseur, permettant aux utilisateurs de sélectionner un dossier et de lancer des calculs, d'afficher une barre de progression et d'être avertis lorsque les résultats sont disponibles.
       - choose_folder(window) : Ouverture de la boîte de dialogue pour sélectionner un dossier et mettre à jour l'étiquette avec le chemin d'accès au dossier sélectionné. :param window :  ctk.CTK Fenêtre principale de l'application. :return : Chemin d'accès au dossier sélectionné.
