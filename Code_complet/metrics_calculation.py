@@ -14,10 +14,10 @@ import numpy as np
 
 def sec_metrics(dom_AC, non_dom_AC):
     """ Calculate metrics (magnitude_ratio and bilateral_magnitude) per second from dominant and non-dominant arm activity counts.
-    :param dom_AC : lsit of dominant arm activity counts
-    :param non_dom_AC : list of non dominant arm activity counts
-    :return magnitude_ratio : list of magnitude ratio per second
-    :return bilateral_magnitude : list of bilateral magnitude per second"""
+    :param dom_AC : lsit of dominant arm activity counts.
+    :param non_dom_AC : list of non dominant arm activity counts.
+    :return magnitude_ratio : list of magnitude ratio per second.
+    :return bilateral_magnitude : list of bilateral magnitude per second."""
 
 
     """*************************************************************************** SEC/SEC metrics ********************************************************************************************"""
@@ -40,10 +40,10 @@ def sec_metrics(dom_AC, non_dom_AC):
 
 def maui_baui(dom_AC, non_dom_AC):
     """This function calculates the MAUI and BAUI metrics based on the dominant and non-dominant arm activity counts.
-    :param dom_AC : list of dominant arm activity counts
-    :param non_dom_AC : list of non dominant arm activity counts
-    :return maui : float of MAUI (Mono Arm Use Index)
-    :return baui : float of BAUI (Bilateral Arm Use Index)
+    :param dom_AC : list of dominant arm activity counts.
+    :param non_dom_AC : list of non dominant arm activity counts.
+    :return maui : float of MAUI (Mono Arm Use Index).
+    :return baui : float of BAUI (Bilateral Arm Use Index).
     """
 
     """*************************************************************************** MAUI / BAUI ********************************************************************************************"""
@@ -85,19 +85,19 @@ def maui_baui(dom_AC, non_dom_AC):
     
 def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude):
     """ This function calculates the mean metrics based on the dominant and non-dominant arm activity counts, and the metrics per seconds. 
-    :param dom_AC : list of dominant arm activity counts
-    :param non_dom_AC : list of non dominant arm activity counts
-    :param magnitude_ratio : list of magnitude ratio per seconde
-    :param bilateral magnitude : list of bilateral magnitude per seconde
-    :return dom_AD : float of dominant active duration
-    :return non_dom_AD : float of non dominant active duration
-    :return bimanual_AD : float of bimanual active duration
-    :return use_ratio_time : float of use ratio time
-    :return use_ratio_intensity : float of use ratio intensity
-    :return dom_mean_AC : float of dominant mean activity counts per second
-    :return non_dom_mean_AC : float of non dominant mean activity counts per second
-    :return mean_bilateral_magnitude : float of mean bilateral magnitude
-    :return mean_magnitude_ratio : float of mean magnitude ratio
+    :param dom_AC : list of dominant arm activity counts.
+    :param non_dom_AC : list of non dominant arm activity counts.
+    :param magnitude_ratio : list of magnitude ratio per seconde.
+    :param bilateral magnitude : list of bilateral magnitude per seconde.
+    :return dom_AD : float of dominant active duration.
+    :return non_dom_AD : float of non dominant active duration.
+    :return bimanual_AD : float of bimanual active duration.
+    :return use_ratio_time : float of use ratio time.
+    :return use_ratio_intensity : float of use ratio intensity.
+    :return dom_mean_AC : float of dominant mean activity counts per second.
+    :return non_dom_mean_AC : float of non dominant mean activity counts per second.
+    :return mean_bilateral_magnitude : float of mean bilateral magnitude.
+    :return mean_magnitude_ratio : float of mean magnitude ratio.
     """
     #Calculate Active Counts (AC) per 2 seconds epoch (to satisfy threshold of 75.0)
     two_sec_dom_AC = []
@@ -157,9 +157,9 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude):
 
 def metrics(dom_AC, non_dom_AC):
     """ This function calculates various metrics based on the dominant and non-dominant arm activity counts.
-    :param dom_AC : list of dominant arm activity counts
-    :param non_dom_AC : list of non dominant arm activity counts
-    :return df_metrics : dict containing the metrics
+    :param dom_AC : list of dominant arm activity counts.
+    :param non_dom_AC : list of non dominant arm activity counts.
+    :return df_metrics : dict containing the metrics.
     """
     magnitude_ratio, bilateral_magnitude = sec_metrics(dom_AC, non_dom_AC)
     maui, baui = maui_baui(dom_AC, non_dom_AC)

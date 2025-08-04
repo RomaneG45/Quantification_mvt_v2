@@ -1,9 +1,6 @@
 """This file select the time interval to analyse depending on the modality and the therapy recorded (HABIT/PARTNER and daily_life center or daily life at home)"""
 
 #///////////////////////////////////// A verifier : 
-# /////////////////////////////////////////// Que se passe-t-il si jour manquant
-# /////////////////////////////////////////// Si c'est les bonnes heures : marche quand meme
-# /////////////////////////////////////////// Que ce passe-t-il si la comparaison de 1h30 comporte plus ou moins que 1h30
 # /////////////////////////////////////////// Si les activitées se chevauchent : mettre uniquement l'heure de début la plus tôt, l'heure de fin la plus tard 
 
 
