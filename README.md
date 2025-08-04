@@ -1,4 +1,17 @@
-HEAD
+# Actinalyseur
+
+## Pré requis
+3.8 < python < 3.12
+openpyxl==3.1.2
+pandas==2.2.2
+numpy==1.24.4
+customtkinter==5.2.0
+agcounts== 0.2.6 
+
+## Guide d'installation
+
+
+## Structure des dossiers
 Activity counts files : folder containing the backup files of the activity counts after preprocessing in the main program
   -> dom_counts : AC of the dominant upper limb
   -> non_dom_counts : AC of the non dominant upper limb
