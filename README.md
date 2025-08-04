@@ -1,6 +1,6 @@
-# Actinalyseur
+## Actinalyseur
 
-## Pré requis
+### Pré requis
 3.8 < python < 3.12
 openpyxl==3.1.2
 pandas==2.2.2
@@ -8,13 +8,13 @@ numpy==1.24.4
 customtkinter==5.2.0
 agcounts== 0.2.6 
 
-## Guide d'installation
+### Guide d'installation
+Téléchargez le dossier "Code_complet" puis executez la commande suivante dans le terminal de l'ordinateur "pyinstaller main.spec". Le fichier éxecutable se télécharge dans le dossier "dist" (dossier Code_complet), puis peut être directement utilisé en double cliquant sur l'icône.
 
-
-## Structure des dossiers
+### Structure des dossiers
 Activity counts files : folder containing the backup files of the activity counts after preprocessing in the main program
-  -> dom_counts : AC of the dominant upper limb
-  -> non_dom_counts : AC of the non dominant upper limb
+  - dom_counts : AC of the dominant upper limb
+  - non_dom_counts : AC of the non dominant upper limb
 
 Code complet : Folder containing the current scripts
   -> agcounts_filter.py : preprocessing file to transform raw data into counted data (transformation into activity count)
