@@ -37,8 +37,8 @@ Doit se trouver au minimum dans le dossier d’entrée:
   - Vie_quotidienne_Info.xlsx
 
 ## Sortie
-Les fichiers de sortie sont enregistrés dans le dossier sélectionné en entrée (l’adresse est indiquée dans la fenêtre de fin d’algorithme).
-- Résultats_comp_1h30.xlsx :
-- Résultats_comp_5h.xslx :
-- Résultats_comp_daily_life.xlsx :
+Les fichiers de sortie sont enregistrés dans le dossier sélectionné en entrée (l’adresse est indiquée dans la fenêtre de fin d’algorithme):
+- Résultats_comp_1h30.xlsx 
+- Résultats_comp_5h.xslx 
+- Résultats_comp_daily_life.xlsx
 
