@@ -1,13 +1,14 @@
 """This file contains the calculation of different metrics based on dominant and non-dominant arm activity counts.
 Two time metrics : 
     - Active Duration
-    - Use Ratio
+    - Time Use Ratio
 Five intensity metrics :
     - Mean Activity Counts
     - Bilateral Magnitude
     - Magnitude Ratio
     - MAUI (Mono Arm Use Index)
     - BAUI (Bilateral Arm Use Index)
+    - Intensity Use Ratio
 """
 
 import numpy as np 

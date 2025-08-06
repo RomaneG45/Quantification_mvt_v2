@@ -11,10 +11,9 @@ This file contains the calculation of different metrics.
 
 """ ******************************************************************* Import ********************************************************************************************"""
 import os
-from datetime import datetime
+from datetime import datetime, time
 import openpyxl
 from tkinter import messagebox
-import time
 import threading
 
 #from segment_file import
@@ -24,6 +23,7 @@ from segment_file import segment_time
 from metrics_calculation import metrics
 from save_metrics_in_excel import select_output_file, write_in_file
 from interface import create_progress_interface, update_progress
+from test_error import test_error
 
 
 """ **************************************************************** Browse files **************************************************************************"""
@@ -40,14 +40,12 @@ if not os.path.exists(output_dir):
 modalities_list = ["Vie_quotidienne", "Stage"]
 input_folder = create_window()
 
-# Dict that register the dom and non dom AC for the different time lapse
+# Register the dom and non dom AC for the different time lapse
 AC_for_comp = {"Vie_quotidienne" : {"comp_daily_life" : {}},
                "Stage" : {"comp_5h" : {},
                         "comp_1h30" : {}}}
-""" ******************************************************** Display any errors in the input files **************************************************************************"""
 
-
-""" ******************************************************** Progress interface **************************************************************************"""
+""" ******************************************************** Creation of progress interface **************************************************************************"""
 
 # Start progress interface in a thread
 idx_interface = 0
@@ -56,24 +54,27 @@ interface_thread = threading.Thread(target=create_progress_interface, args = (pr
 interface_thread.daemon = True  # Close the interface with the main script
 interface_thread.start()
 
-""" ********************************************************  **************************************************************************"""
+# Count the number of files to read in the input folder
 nb_file_to_read = 0
-#Loop to know how many file there is for the modality
 for modality in modalities_list:
+    # Initialize the index of record file for the modality (ex: Stage 1)
+    idx_file_modality = 1
+    # Browse files in the input folder
     for file in os.listdir(input_folder):
+        # Count the number of files to read
         if file.startswith(modality) and file.endswith(".csv"):
             nb_file_to_read +=1
-nb_file_to_read = int(nb_file_to_read / 2)
-print(f"nb de file : {nb_file_to_read}")
 
-""" *********************************************************************************************************************************"""
-#
+nb_file_to_read = int(nb_file_to_read / 2)
+
+""" ******************************************************** Checking if the input folder has no errors **************************************************************************"""
+test_error(input_folder, modalities_list)
+
+""" ******************************************************** Getting info from input folder **************************************************************************"""
 # Wait for the progress interface to be created
 while "bar" not in progress_data or "interface" not in progress_data:
     time.sleep(3)
 
-""" ******************************************************** Getting info from input folder **************************************************************************"""
-#for file in os.listdir(input_folder):
 for modality in modalities_list:
     # Initialize the index of record file for the modality (ex: Stage 1)
     idx_file_modality = 1
@@ -84,9 +85,6 @@ for modality in modalities_list:
         if file.startswith(modality+ "_" + str(idx_file_modality)):
 
             # Select the Info file in the input folder
-            if modality + "_Info.xlsx" not in os.listdir(input_folder):
-                # Notify the user that there is no info file in the inupt folder
-                messagebox.showinfo("Fin", f"Aucun fichier {modality + '_Info.xlsx'} dans le dossier sélectionné")
             input_info_file = input_folder + "/" + modality + "_Info.xlsx"
 
             # Load excel file containing the information
@@ -133,18 +131,14 @@ for modality in modalities_list:
 
 
             """****************************************************** Getting AC ********************************************************************************************"""
-            if  modality + "_" + str(idx_file_modality) + "_" + dom_UL + ".csv" not in os.listdir(input_folder):
-                # Notify the user that there is no dom file in the inupt folder
-                messagebox.showinfo("Fin", f"Aucun fichier {modality + '_' + str(idx_file_modality) + '_' + dom_UL + '.csv'} dans le dossier sélectionné")
-            if  modality + "_" + str(idx_file_modality) + "_" + non_dom_UL + ".csv" not in os.listdir(input_folder):
-                # Notify the user that there is no non_dom file in the inupt folder
-                messagebox.showinfo("Fin", f"Aucun fichier {modality + '_' + str(idx_file_modality) + '_' + non_dom_UL + '.csv'} dans le dossier sélectionné")
-
+            # Define the file path for the dom and non dom files
             file_dom = input_folder + "/" + modality +  "_" + str(idx_file_modality) + "_" + dom_UL + ".csv"
             file_non_dom = input_folder + "/" + modality + "_" + str(idx_file_modality) + "_" + non_dom_UL + ".csv"
            
+            # Update the progress bar
             progress_data["interface"].after(0, update_progress, int(idx_interface) / nb_file_to_read , progress_data["bar"], progress_data["interface"], f"Lecture des données des capteurs de '{modality}_{idx_file_modality}' ...", progress_data["message_label"],progress_data["progress_title"])
-
+            
+            # Convert the raw data into Activity Counts
             print("Converting raw data into Activity Counts")
             dom_counts, non_dom_counts = convert_AC(file_dom, file_non_dom, nb_file_to_read, idx_interface, progress_data) 
 
@@ -198,24 +192,24 @@ for modality in modalities_list:
 
                     if dom_AC != [] and non_dom_AC != []:
 
-                        #****************************** Metrics calculation for the selected time lapse ******************************
+                        """****************************** Metrics calculation for the selected time lapse ******************************"""
                         dict_metrics = metrics(dom_AC, non_dom_AC)
                         
                         print(f"Dominant Active Duration for the day {count_date}: {dict_metrics['dom_AD']}")
                         print(f"Non Dominant Active Duration for the day {count_date} : {dict_metrics['non_dom_AD']}\n")
                         print(f"Metrics saved for the day {count_date}\n")
 
-                        
+                        # Open the output file corresponding to the comparison
                         output_file_path = input_folder + "/" + "Résultats_" + comparison + ".xlsx" 
                         output_wb = openpyxl.load_workbook(output_file_path)
 
-                        #******************************* Save metrics in an excel file ***********************************************
+                        """******************************* Save metrics in an excel file ***********************************************"""
                         time_metrics = [dict_metrics['dom_AD'], dict_metrics['non_dom_AD'],dict_metrics['bimanual_AD'], dict_metrics['use_ratio_time']]
                         intensity_metrics = [dict_metrics['dom_mean_AC'], dict_metrics['non_dom_mean_AC'], dict_metrics['mean_bilateral_magnitude'], dict_metrics['mean_magnitude_ratio'], dict_metrics['maui'], dict_metrics['baui'], dict_metrics['use_ratio_intensity']]
                         record_time = len(dom_AC) / 60 # time in min
                         write_in_file(output_wb, output_file_path, record_time, idx_day, day, time_metrics, intensity_metrics)
                     
-                    #Update loop values
+                    # Update loop values
                     idx_day += 1 
                 
                 # Notify the user if the recorded hours and the hours in the info file do not match 
@@ -223,7 +217,7 @@ for modality in modalities_list:
                     messagebox.showinfo("Attention",f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}_{idx_file_modality}_{comparison}" )
                     print(f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}_{idx_file_modality}_{comparison}")
 
-
+            # Print the algorithme calculation time
             algo_end_time= datetime.now()
             print(f"L'algo dure : {algo_end_time-algo_start_time}")
 
