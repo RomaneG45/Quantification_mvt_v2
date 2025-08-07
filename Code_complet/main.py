@@ -11,10 +11,11 @@ This file contains the calculation of different metrics.
 
 """ ******************************************************************* Import ********************************************************************************************"""
 import os
-from datetime import datetime, time
+from datetime import datetime
 import openpyxl
 from tkinter import messagebox
 import threading
+import time 
 
 #from segment_file import
 from interface import create_window
@@ -62,7 +63,7 @@ for modality in modalities_list:
     # Browse files in the input folder
     for file in os.listdir(input_folder):
         # Count the number of files to read
-        if file.startswith(modality) and file.endswith(".csv"):
+        if file.startswith(modality) and file.endswith("_Droit.csv") or file.startswith(modality) and file.endswith("_Gauche.csv"):
             nb_file_to_read +=1
 
 nb_file_to_read = int(nb_file_to_read / 2)
@@ -161,25 +162,36 @@ for modality in modalities_list:
                     # Check that the day from the sensor is register in the info excel
                     if count_date in time_lapse.keys():
 
-                        # Check if the time lapse for the day already exists
+                        # Check if the date for the day already exists
                         if count_date not in AC_for_comp[modality][time_lapse_name].keys():
-                                AC_for_comp[modality][time_lapse_name][count_date] =  {"dom_AC" : [],"non_dom_AC" : []} 
-
+                            AC_for_comp[modality][time_lapse_name][count_date] =  {"dom_AC" : [],"non_dom_AC" : []} 
+                            print("Remmet à 0 les AC pour le jour")
+                        
                         # Get start_time and end_time of the recording from the day
                         lst_start_time = time_lapse[count_date]["start_time"]
                         lst_end_time = time_lapse[count_date]["end_time"] 
 
-                        if lst_start_time and lst_end_time != []:
-
-                            # Loop on the timelapses of the excel info file
+                        # Compare the time of the activity count with the start and end time of the activity
+                        # For Stage, there can be several time lapses for the same day (ex: 9h-12h30 and 14h-16h) (need a loop)
+                        if lst_start_time != [] and lst_end_time != [] and modality == "Stage":
+                            print(f"Liste start time : {lst_start_time}, liste end time : {lst_end_time}")
+                            # Loop on the timelapses of the excel info file (several timelapses for PARTNER)
                             for idx_hour in range(0,len(lst_start_time)):
-
                                 # Add the new AC 
+                                lst_start_time[idx_hour]
                                 if dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") >= lst_start_time[idx_hour] and dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") < lst_end_time[idx_hour]:
                                     AC_for_comp[modality][time_lapse_name][count_date]["dom_AC"].append(dom_counts.loc[data_idx, "AC"])
                                     AC_for_comp[modality][time_lapse_name][count_date]["non_dom_AC"].append(non_dom_counts.loc[data_idx, "AC"])
+                       # Compare the time of the activity count with the start and end time of the activity
+                       # For Vie_quotidienne, there is only one time lapse for the day, time can be saved by not calling the loop
+                        elif lst_start_time != [] and lst_end_time != [] and modality == "Vie_quotidienne":
+                            # Add the new AC 
+                            if dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") >= lst_start_time[0] and dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") < lst_end_time[0]:
+                                AC_for_comp[modality][time_lapse_name][count_date]["dom_AC"].append(dom_counts.loc[data_idx, "AC"])
+                                AC_for_comp[modality][time_lapse_name][count_date]["non_dom_AC"].append(non_dom_counts.loc[data_idx, "AC"])
 
             """************************************************* Explore the AC lists for the different time laps to calculate the metrics ********************************************************"""
+            
             dom_AC = []
             dom_non_AC = []
             # Explore the AC lists for the different time laps to calculate the metrics
@@ -214,7 +226,7 @@ for modality in modalities_list:
                 
                 # Notify the user if the recorded hours and the hours in the info file do not match 
                 if dom_AC == []:
-                    messagebox.showinfo("Attention",f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}_{idx_file_modality}_{comparison}" )
+                    messagebox.showwarning("Attention",f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}_{idx_file_modality}_{comparison}" )
                     print(f"Il y a une erreur : les dates ou les heures du fichier Info ne correspondent pas aux données des capteurs pour la modalité : {modality}_{idx_file_modality}_{comparison}")
 
             # Print the algorithme calculation time

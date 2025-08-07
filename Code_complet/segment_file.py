@@ -17,6 +17,9 @@ def segment_time(modality, therapy, info_sheet):
     comp_5h = {}
     comp_1h30 = {}
     comp_vie_quot = {}
+    # Variable insert once 9h (or 12h) in the start time for Stage 
+    add_9h = True
+    add_12h30 = True
     
     for row in info_sheet.iter_rows(min_row=2):
 
@@ -38,12 +41,11 @@ def segment_time(modality, therapy, info_sheet):
             if row[4].value is not None:
                 # Create a new date key
                 row_date = row[4].value.date()
-                comp_5h[row_date] = {"start_time" : [], "end_time" : []}
-                comp_1h30[row_date] = {"start_time" : [], "end_time" : []}
-
-                # Variable insert once 9h (or 12h) in the start time for Stage 
-                add_9h = True
-                add_12h30 = True
+                # //////////////////////////////////////////////////////////////////////: AJOUTER : si row_date not in comp_5h.keys() et comp_1h30.keys()
+                if row_date not in comp_5h.keys():
+                    comp_5h[row_date] = {"start_time" : [], "end_time" : []}
+                if row_date not in comp_1h30.keys():
+                    comp_1h30[row_date] = {"start_time" : [], "end_time" : []}
 
             # Get the start hours 
             if isinstance(row[8].value, time):
