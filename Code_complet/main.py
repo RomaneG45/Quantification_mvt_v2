@@ -165,7 +165,6 @@ for modality in modalities_list:
                         # Check if the date for the day already exists
                         if count_date not in AC_for_comp[modality][time_lapse_name].keys():
                             AC_for_comp[modality][time_lapse_name][count_date] =  {"dom_AC" : [],"non_dom_AC" : []} 
-                            print("Remmet à 0 les AC pour le jour")
                         
                         # Get start_time and end_time of the recording from the day
                         lst_start_time = time_lapse[count_date]["start_time"]
@@ -174,7 +173,6 @@ for modality in modalities_list:
                         # Compare the time of the activity count with the start and end time of the activity
                         # For Stage, there can be several time lapses for the same day (ex: 9h-12h30 and 14h-16h) (need a loop)
                         if lst_start_time != [] and lst_end_time != [] and modality == "Stage":
-                            print(f"Liste start time : {lst_start_time}, liste end time : {lst_end_time}")
                             # Loop on the timelapses of the excel info file (several timelapses for PARTNER)
                             for idx_hour in range(0,len(lst_start_time)):
                                 # Add the new AC 
