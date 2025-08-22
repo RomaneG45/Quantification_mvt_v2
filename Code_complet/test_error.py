@@ -1,4 +1,3 @@
-
 import os
 from datetime import datetime, time
 import openpyxl
@@ -7,13 +6,26 @@ from tkinter import messagebox
 """This file handles any errors related to the input file. A message is displayed in the interface if there is something to change in the input folder.
 errors tested:
 - If the input folder contains the right files
-- If the values in the info file are of the right type"""
+- If the values in the info file are of the right type
 
-def test_error(input_folder, modalities_list):
+Called interface.py"""
+
+def test_error(input_folder, modalities_list, threshold_selected):
     """
     This function ckecks if the input folder contains the right files and if the values in the info file are of the right type.
     :param input_folder: The folder containing the input files
-    :param modalities_list: The list of modalities to check"""
+    :param modalities_list: The list of modalities to check
+    :return True if any errors occur
+    :return False if the script meets an error or a warning"""
+    
+    """ ******************************************************** Checks if a input folder and a threshold method are selected **************************************************************************"""
+    if input_folder == " " or input_folder == "":
+        messagebox.showwarning("Fin","Veuillez choisir un dossier")
+        return False
+
+    if threshold_selected == " " :
+        messagebox.showwarning("Fin","Veuillez choisir une méthode de seuillage")
+        return False
 
     """ ******************************************************** Checks if the input folder contains the right files **************************************************************************"""
     for modality in modalities_list:
@@ -27,11 +39,11 @@ def test_error(input_folder, modalities_list):
                 if  modality + "_" + str(idx_file_modality) + "_Droit" + ".csv" not in os.listdir(input_folder):
                     # Notify the user that there is no dom file in the inupt folder
                     messagebox.showerror("Fin", f"Aucun fichier {modality + '_' + str(idx_file_modality) + '_Droit' + '.csv'} dans le dossier sélectionné. Ajoutez le fichier avant de relancer le programme.")
-                    exit()
+                    return False
                 if  modality + "_" + str(idx_file_modality) + "_Gauche" + ".csv" not in os.listdir(input_folder):
                     # Notify the user that there is no non_dom file in the inupt folder
                     messagebox.showerror("Fin", f"Aucun fichier {modality + '_' + str(idx_file_modality) + '_Gauche' + '.csv'} dans le dossier sélectionné. Ajoutez le fichier avant de relancer le programme.")
-                    exit()
+                    return False
                 
                 idx_file_modality += 1
 
@@ -39,7 +51,7 @@ def test_error(input_folder, modalities_list):
             if modality + "_Info.xlsx" not in os.listdir(input_folder):
                 # Notify the user that there is no info file in the inupt folder
                 messagebox.showerror("Fin", f"Aucun fichier {modality + '_Info.xlsx'} dans le dossier sélectionné. Ajoutez le fichier avant de relancer le programme.")
-                exit()
+                return False
         
 
             """ ******************************************************** Checks if the input files contains the type **************************************************************************"""
@@ -55,21 +67,27 @@ def test_error(input_folder, modalities_list):
                 for cell in info_sheet["E"]:
                     if cell.row > 1 and not isinstance(cell.value, datetime) and cell.value is not None:
                         messagebox.showerror("Fin", f"La valeur de la cellule JOUR DE PORT {cell.row} dans le fichier {modality}_Info.xlsx n'est pas de type date. Modifiez la valeur avant de relancer le programme.")
-                        exit()
+                        return False
                 for cell in info_sheet["I"]:
                     if cell.row > 1 and not isinstance(cell.value,time) and cell.value is not None:
                         messagebox.showerror("Fin", f"La valeur de la cellule HEURE DE DEBUT D'ACTIVITE {cell.row} dans le fichier {modality}_Info.xlsx n'est pas de type heure. Modifiez les valeurs avant de relancer le programme.")
-                        exit()
+                        return False
                 for cell in info_sheet["J"]:
                     if cell.row > 1 and not isinstance(cell.value,time) and cell.value is not None:
                         messagebox.showerror("Fin", f"La valeur de la cellule HEURE DE FIN D'ACTIVITE {cell.row} dans le fichier {modality}_Info.xlsx n'est pas de type heure.  Modifiez les valeurs avant de relancer le programme.")
-                        exit()
+                        return False
 
             """ ******************************************************** Checks if the input files contains the type **************************************************************************"""
-            
-            try:
-                with open(file, 'a'):
-                    return True
-            except PermissionError:
-                messagebox.showerror("Fin", f"Le fichier {file} est ouvert. Fermez le avant de relancer le programme.")
-                exit()
+
+            full_path = os.path.join(input_folder, file)
+            # Check if the selected item is a file
+            if os.path.isfile(full_path):
+                try:
+                    with open(full_path, 'a'):
+                        pass
+                except PermissionError:
+                    messagebox.showerror("Fin", f"Le fichier {file} est ouvert. Fermez le avant de relancer le programme.")
+                    return False
+            else:
+                continue
+    return True
