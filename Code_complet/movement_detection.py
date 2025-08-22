@@ -1,4 +1,5 @@
-"""This file classify each second as a "movement" or a "non movement" depending on the selected method defined by the user. It then calculates dominant and non dominant active durations."""
+"""This file classify each second as a "movement" or a "non movement" depending on the selected method defined by the user. It then calculates dominant and non dominant active durations.
+Called in main.py"""
 
 import numpy as np
 from joblib import load
@@ -11,8 +12,8 @@ def active_duration_calculation(selected_method, dom_AC, non_dom_AC, gyro_dom, g
     :param selected_method (str) : method selected by the user in the interface, to detect movements
     :param dom_AC (lst) : list of dominant activity counts
     :param non_dom_AC (lst) : list of non dominant activity counts
-    :param gyro_dom : dict of gyroscope data for the X, Y, and Z axes
-    :param gyro_non_dom : dict of gyroscope data for the X, Y, and Z axes
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
+    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration
     """
@@ -73,8 +74,8 @@ def RF_theshold(dom_AC, non_dom_AC):
     reshaped_non_dom_AC = np.vstack(np.array(non_dom_AC))
     
     # Active duration
-    RF_model_dom = load('Random_Forest_dom.joblib')
-    RF_model_non_dom = load('Random_Forest_non_dom.joblib')
+    RF_model_dom = load('Random_Forest_dom.joblib') # the model can be changed
+    RF_model_non_dom = load('Random_Forest_non_dom.joblib') # the model can be changed
     # Movement predictions
     dom_mov_pred = RF_model_dom.predict(reshaped_dom_AC)
     non_dom_mov_pred = RF_model_non_dom.predict(reshaped_non_dom_AC)
@@ -93,9 +94,11 @@ def RF_theshold(dom_AC, non_dom_AC):
 
 def coley_theshold(dom_AC, non_dom_AC, gyro_dom, gyro_non_dom):
     """
-    This functin calculates active duration by detecting an activity with Coley algorithm (cf mindmaze protocol).
+    This function calculates active duration by detecting an activity with Coley algorithm (cf mindmaze protocol).
     :param dom_AC (lst) : list of dominant activity counts
     :param non_dom_AC (lst) : list of non dominant activity counts
+    :param gyro_dom (dict) : dict gyroscope data for the X, Y, and Z axes
+    :param gyro_non_dom : dict of gyroscope data for the X, Y, and Z axes
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration 
     :return bimanual_AD (float) : Bimanual active duration

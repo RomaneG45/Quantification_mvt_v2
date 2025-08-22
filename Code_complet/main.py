@@ -5,6 +5,8 @@ This file contains the calculation of different metrics.
 :import segment_file: program that segments the data depending on the therapy modality and hours of activity.
 :import metrics_calculation : program that calculates the movement metrics from activity counts.
 :import save_metrics_in_excel : program that saves the calculated metrics in an excel file.
+:import test_error : program for error detection : a message is displayed if an error prevents calculations from being performed on the input files.
+:import movement_detection : program that choose the selected threshold method and compute active durations.
 
 :return excel files that contains mean value or value for 8 metrics.
 """
@@ -19,12 +21,11 @@ import time
 import pandas as pd
 
 #from segment_file import
-from interface import create_window
+from interface import create_window, create_progress_interface, update_progress
 from agcounts_filter import convert_AC
 from segment_file import segment_time
 from metrics_calculation import metrics
 from save_metrics_in_excel import select_output_file, write_in_file
-from interface import create_progress_interface, update_progress
 from test_error import test_error
 
 

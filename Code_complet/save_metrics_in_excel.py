@@ -1,5 +1,6 @@
 """ This file contains the functions to save the metrics in an Excel file.
-It selects the output file, initializes the first column with metric names, and saves the metrics for each day."""
+It selects the output file, initializes the first column with metric names, and saves the metrics for each day.
+Called in main.py"""
 
 import openpyxl
 from openpyxl import Workbook
@@ -11,11 +12,10 @@ from openpyxl.styles import Alignment
 def select_output_file(file_path, ID, therapy_name):
     """
     Selects the output file to write the metrics. If the file exists, it loads the existing data. If the file does not exist, it creates a new file and initializes the first column with metric names and save the child info.
-    :param file_path: Path to the output file.
-    :param ID : Str ID of the child.
-    :param therapy_name: Str name of the therapy ("HABIT" ou "PARTNER").
-    :return my_wb: Workbook object for the output file.
-    :return my_sheet: Active sheet of the workbook.
+    :param file_path (str) : path to the output file.
+    :param ID (str) : ID of the child.
+    :param therapy_name (str) : name of the therapy ("HABIT" ou "PARTNER").
+    :return my_wb (openpyxl.Workbook()) : workbook object for the output file.
     """
     # Select file
     if os.path.exists(file_path): 
@@ -62,14 +62,14 @@ def select_output_file(file_path, ID, therapy_name):
 def write_in_file(my_wb, file_path, record_time, idx_day, day, lst_time_metrics, lst_intensity_metrics):
     """
     This function writes the metrics into an Excel file. It creates a new column for each child and fills it with the corresponding metrics.
-    :param my_wb : Excel file to save data.
-    :param file_path : Path to the output file.
-    :param record_time : Int of the minutes of recorded time for 1 day.
-    :param idx_day : Int of the day index (ex : 1 for day 1).
-    :param day : Datetime date of the day.
-    :param lst_time_metrics: List of time metrics to write in the file.
-    :param lst_intensity_metrics: List of intensity metrics to write in the file.
-    :return : Save the metrics from lst_time_metrics and lst_intensity_metrics in the excel file corresponding to my_wb.
+    :param my_wb (openpyxl.Workbook()) : excel file to save data.
+    :param file_path (str) : path to the output file.
+    :param record_time (int) : minutes of recorded time for 1 day.
+    :param idx_day (int) : day index (ex : 1 for day 1).
+    :param day (datetime.date()) : date of the day.
+    :param lst_time_metrics (list) : time metrics to write in the file.
+    :param lst_intensity_metrics (list): intensity metrics to write in the file.
+    :return : save the metrics from lst_time_metrics and lst_intensity_metrics in the excel file corresponding to my_wb.
     """
     my_sheet = my_wb.active
 

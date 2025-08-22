@@ -14,8 +14,8 @@ folder = " "
 # Folder selection function
 def choose_folder(window):
     """Function to open a dialog for folder selection and update the label with the selected folder path.
-    :param window: The main application window.
-    :return: The selected folder path."""
+    :param window (ctk.CTk()): the main application window.
+    :return folder (str): the selected folder path."""
     try:
         global folder
         folder = filedialog.askdirectory()
@@ -32,7 +32,8 @@ def choose_folder(window):
 # Function to launch calculations
 def start_calculation(window, selected_threshold):
     """Function to handle the action when the user clicks the 'Metrics calculation' button.
-    :param window: The main application window."""
+    :param window (ctk.CTk()) : The main application window.
+    :param selected_threshold (str) : name of the selected threshold method"""
     try:
         modalities_list = ["Vie_quotidienne", "Stage"]
         
@@ -48,12 +49,14 @@ def start_calculation(window, selected_threshold):
 def on_option_change(selected_threshold):
     print(f"Option sélectionnée : {selected_threshold.get()}")
 
-# --- Layout ---
+# Layout 
 def create_window():
-    """Function to create the main application window with a folder selection interface.
-    :return: The selected folder path."""
+    """Function to create the main application window with a folder and the threshold selection interface.
+    :return folder (str): the selected folder path.
+    :return selected_option.get() (str) : the name of the selected threshold method
+    """
     try:
-        # Basic configuration
+        # Theme configuration
         ctk.set_appearance_mode("light")     
         ctk.set_default_color_theme("green") 
 
@@ -69,7 +72,7 @@ def create_window():
 
         # Load image
         folder_image_path = os.path.join(script_dir, "Images", "folder_image.png")
-        file_img = CTkImage(Image.open(folder_image_path), size = (90, 90))  # ajuste la taille selon ton image
+        file_img = CTkImage(Image.open(folder_image_path), size = (90, 90)) 
 
         # ------------------------------------------------ Frames creation ---------------------------------------
         # Horizontal frame for image + button + label
@@ -163,13 +166,13 @@ def create_window():
 
 def update_progress(idx_interface,progress_bar, progress_interface, message, message_label, progress_title):
     """Function to update the progress bar.
-    :param idx_interface: Int of the current index of the progress bar.
-    :param progress_bar:  ctk.CTkProgressBar The progress bar widget.
-    :param progress_interface: ctk.CTK The main interface window.
-    :param message: Str message to display in the interface windox.
-    :param message_label: ctk.CTkLabel The label widget to display the message."""
+    :param idx_interface (int): the current index of the progress bar.
+    :param progress_bar (ctk.CTkProgressBar) : the progress bar widget.
+    :param progress_interface (ctk.CTK) : the main interface window.
+    :param message (str) : message to display in the interface windox.
+    :param message_label (ctk.CTkLabel) : the label widget to display the message.
+    :param progress_title (ctk.CTkLabel() : title to display in the progess interface. """
     # Update the progress bar value
-    #print(f" type de idx_interface : {type(idx_interface)}")
     try:
         if idx_interface > 0.0:
             progress_bar.set(idx_interface) 
@@ -181,12 +184,9 @@ def update_progress(idx_interface,progress_bar, progress_interface, message, mes
             progress_bar.set(idx_interface) 
             progress_interface.update_idletasks()
             # Update the title interface (first or second)
-            #if message_label.cget("text") != "Lancement ...":
             progress_title.configure(text = f"Progression")
             # Update the message in the interface
             message_label.configure(text = message)
-            
-
 
     except Exception as e:
         print("Erreur dans le thread interface: ", e)
@@ -196,6 +196,7 @@ def update_progress(idx_interface,progress_bar, progress_interface, message, mes
 def create_progress_interface(progress_dict):
     """Function to create a CustomTkinter progress bar interface.
     :param progress_dict: A dictionary to store references to the progress bar and interface."""
+
     try : 
         # Initialize the CustomTkinter app
         progress_interface = ctk.CTk()
@@ -227,7 +228,7 @@ def create_progress_interface(progress_dict):
 
         # Initialize the progress bar
         progress_bar.set(0)  
-        # Stocker les références dans un dictionnaire partagé
+        # Store references in a shared dictionary
         progress_dict["bar"] = progress_bar
         progress_dict["interface"] = progress_interface
         progress_dict["message_label"] = message_label

@@ -9,6 +9,7 @@ Five intensity metrics :
     - MAUI (Mono Arm Use Index)
     - BAUI (Bilateral Arm Use Index)
     - Intensity Use Ratio
+Called in main.py
 """
 
 import numpy as np 
@@ -16,10 +17,10 @@ from movement_detection import active_duration_calculation
 
 def sec_metrics(dom_AC, non_dom_AC):
     """ Calculate metrics (magnitude_ratio and bilateral_magnitude) per second from dominant and non-dominant arm activity counts.
-    :param dom_AC : lsit of dominant arm activity counts.
-    :param non_dom_AC : list of non dominant arm activity counts.
-    :return magnitude_ratio : list of magnitude ratio per second.
-    :return bilateral_magnitude : list of bilateral magnitude per second."""
+    :param dom_AC (list) : dominant arm activity counts.
+    :param non_dom_AC (list) : non dominant arm activity counts.
+    :return magnitude_ratio (list) : magnitude ratio per second.
+    :return bilateral_magnitude (list) : bilateral magnitude per second."""
 
 
     """*************************************************************************** SEC/SEC metrics ********************************************************************************************"""
@@ -42,10 +43,10 @@ def sec_metrics(dom_AC, non_dom_AC):
 
 def maui_baui(dom_AC, non_dom_AC):
     """This function calculates the MAUI and BAUI metrics based on the dominant and non-dominant arm activity counts.
-    :param dom_AC : list of dominant arm activity counts.
-    :param non_dom_AC : list of non dominant arm activity counts.
-    :return maui : float of MAUI (Mono Arm Use Index).
-    :return baui : float of BAUI (Bilateral Arm Use Index).
+    :param dom_AC (list) : dominant arm activity counts.
+    :param non_dom_AC (list) : non dominant arm activity counts.
+    :return maui (float) : MAUI (Mono Arm Use Index).
+    :return baui (float) : BAUI (Bilateral Arm Use Index).
     """
 
     """*************************************************************************** MAUI / BAUI ********************************************************************************************"""
@@ -87,22 +88,22 @@ def maui_baui(dom_AC, non_dom_AC):
     
 def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, threshold_method, gyro_dom, gyro_non_dom):
     """ This function calculates the mean metrics based on the dominant and non-dominant arm activity counts, and the metrics per seconds. 
-    :param dom_AC : list of dominant arm activity counts.
-    :param non_dom_AC : list of non dominant arm activity counts.
-    :param magnitude_ratio : list of magnitude ratio per seconde.
-    :param bilateral magnitude : list of bilateral magnitude per seconde.
-    :param threshold_method : str of selected threshold method to detect a movement
-    :param gyro_dom : dict of gyroscope data for the X, Y, and Z axes 
-    :param gyro_dom : dict of gyroscope data for the X, Y, and Z axes 
-    :return dom_AD : float of dominant active duration.
-    :return non_dom_AD : float of non dominant active duration.
-    :return bimanual_AD : float of bimanual active duration.
-    :return use_ratio_time : float of use ratio time.
-    :return use_ratio_intensity : float of use ratio intensity.
-    :return dom_mean_AC : float of dominant mean activity counts per second.
-    :return non_dom_mean_AC : float of non dominant mean activity counts per second.
-    :return mean_bilateral_magnitude : float of mean bilateral magnitude.
-    :return mean_magnitude_ratio : float of mean magnitude ratio.
+    :param dom_AC (lst) : dominant arm activity counts.
+    :param non_dom_AC (lst) : non dominant arm activity counts.
+    :param magnitude_ratio (lst) : magnitude ratio per seconde.
+    :param bilateral magnitude (lst) : bilateral magnitude per seconde.
+    :param threshold_method (str) : selected threshold method to detect a movement
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes 
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes 
+    :return dom_AD (float) : dominant active duration.
+    :return non_dom_AD (float) : non dominant active duration.
+    :return bimanual_AD (float) : bimanual active duration.
+    :return use_ratio_time (float) : use ratio time.
+    :return use_ratio_intensity (float) : use ratio intensity.
+    :return dom_mean_AC (float) : dominant mean activity counts per second.
+    :return non_dom_mean_AC (float) : non dominant mean activity counts per second.
+    :return mean_bilateral_magnitude (float) : mean bilateral magnitude.
+    :return mean_magnitude_ratio (float) : mean magnitude ratio.
     """
     # Active duration and bimanual active duration
     dom_AD, non_dom_AD, bimanual_AD = active_duration_calculation(threshold_method, dom_AC, non_dom_AC, gyro_dom, gyro_non_dom)
@@ -133,12 +134,12 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, thres
 
 def metrics(dom_AC, non_dom_AC, threshold_method, gyro_dom, gyro_non_dom):
     """ This function calculates various metrics based on the dominant and non-dominant arm activity counts.
-    :param dom_AC : list of dominant arm activity counts.
-    :param non_dom_AC : list of non dominant arm activity counts.
-    :param threshold_method : str of selected threshold method to detect a movement
-    :param gyro_dom : dict of gyroscope data for the X, Y, and Z axes
-    :param gyro_non_dom : dict of gyroscope data for the X, Y, and Z axes
-    :return df_metrics : dict containing the metrics.
+    :param dom_AC (list) : dominant arm activity counts.
+    :param non_dom_AC (list) : non dominant arm activity counts.
+    :param threshold_method (str) : selected threshold method to detect a movement
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
+    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
+    :return df_metrics (dict) : dict containing the metrics.
     """
     magnitude_ratio, bilateral_magnitude = sec_metrics(dom_AC, non_dom_AC)
     maui, baui = maui_baui(dom_AC, non_dom_AC)

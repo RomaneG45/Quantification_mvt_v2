@@ -1,18 +1,17 @@
-"""This file select the time interval to analyse depending on the modality and the therapy recorded (HABIT/PARTNER and daily_life center or daily life at home)"""
+"""This file select the time interval to analyse depending on the modality and the therapy recorded (HABIT/PARTNER and daily_life center or daily life at home)
+called in main.py"""
 
-#///////////////////////////////////// A verifier : 
-# /////////////////////////////////////////// Si les activitées se chevauchent : mettre uniquement l'heure de début la plus tôt, l'heure de fin la plus tard 
 from datetime import datetime, time
 
 
 def segment_time(modality, therapy, info_sheet):
     """This function segments a file, depending on the therapy modality and hours of activity. If record in center, the file is segmented from 8h to 20h. If at home, the file is segmented depending on the hours of activity (parent's annotations).
-    :param modality : Str of the modality type ("Vie_quotidienne" or "Stage").
-    :param therapy : Str of the therapy name ("HABIT" or "PARTNER").
-    :param info_sheet : Workbook sheet that contains the start and end time of records.
-    :return comp_vie_quot : Dict with the date as key and the start and end time of the activity as value.
-    :return comp_1h30 : Dict with the date as key and the start and end time of the activity as value.
-    :return comp_5h : Dict with the date as key and the start and end time of the activity as value.
+    :param modality (str) : the modality type ("Vie_quotidienne" or "Stage").
+    :param therapy (str) : the therapy name ("HABIT" or "PARTNER").
+    :param info_sheet (openpyxl.Workbook()) : sheet that contains the start and end time of records.
+    :return comp_vie_quot (dict) : dict with the date as key and the start and end time of the activity as value.
+    :return comp_1h30 (dict) : dict with the date as key and the start and end time of the activity as value.
+    :return comp_5h (dict) : dict with the date as key and the start and end time of the activity as value.
     """
     comp_5h = {}
     comp_1h30 = {}

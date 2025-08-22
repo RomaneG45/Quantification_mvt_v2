@@ -1,13 +1,12 @@
 """ This file contains the conversion of raw accelerometer data from a CSV file into activity counts.
 It reads the CSV file, processes the accelerometer data, and returns a DataFrame with activity counts.
-This code is extracted from github "https://github.com/actigraph/agcounts", and was published with the work of Neishabouri et al. (2022)."""
+This code is extracted from github "https://github.com/actigraph/agcounts", and was published with the work of Neishabouri et al. (2022).
+Called in main.py """
 
 from agcounts.extract import get_counts
 import pandas as pd
 import numpy as np
 from interface import update_progress
-
-
 
 def get_counts_csv(
     file,
@@ -25,7 +24,7 @@ def get_counts_csv(
         print("Reading in CSV", flush=True)
         # Interface
         progress_data["interface"].after(0, update_progress, progress_idx , progress_data["bar"], progress_data["interface"], f"Conversion des données brutes en array ...", progress_data["message_label"], progress_data["progress_title"])
-    raw = pd.read_csv(file, skiprows=10,decimal=",")# skiprows = 0 if the file has no header, skiprows = n if the file has n header rows
+    raw = pd.read_csv(file, skiprows=10,decimal=",") # skiprows = 0 if the file has no header, skiprows = n if the file has n header rows
     if time_column is not None:
         ts = raw[time_column]
         ts = pd.to_datetime(ts)
