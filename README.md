@@ -18,7 +18,7 @@ Code complet : dossier contenant les scripts actuels
       - convert_counts_csv() : conversion des données brutes en activity counts.
       - convert_AC() : méthode principale appelant gets_counts_csv() et convert_counts_csv().
         
-  - interface.py : interface de l'application Actinalyseur, permettant aux utilisateurs de sélectionner un dossier et de lancer des calculs, d'afficher une barre de progression et d'être avertis lorsque les résultats sont disponibles.
+  - interface.py : interface de l'application Actinalyseur, permettant aux utilisateurs de sélectionner un dossier et une méthode de seuillage du mouvement, puis de lancer des calculs. Dans une autre fenêtre le code affiche une barre de progression et avertit l'utilisateur lorsque les résultats sont disponibles.
       - choose_folder(window) : ouverture de la boîte de dialogue pour sélectionner un dossier et mettre à jour l'étiquette avec le chemin d'accès au dossier sélectionné. :param window (ctk.CTK) : Fenêtre principale de l'application. :return folder (str): chemin d'accès au dossier sélectionné.
       - start_calculation(window, selected_threshold): gestion de l'action lorsque l'utilisateur clique sur le bouton « Calcul des métriques ». :param window (ctk.CTK) : Fenêtre principale de l'application :param selected_threshold (str) : nom de la méhode de sueillage sélectionnée.
       - on_option_change(selected_threshold) : afficher la méthode de seuillage séléctionnée. :param selected_threshold (str) : nom de la méhode de sueillage sélectionnée.
