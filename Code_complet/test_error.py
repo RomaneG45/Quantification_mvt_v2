@@ -15,6 +15,7 @@ def test_error(input_folder, modalities_list, threshold_selected):
     This function ckecks if the input folder contains the right files and if the values in the info file are of the right type.
     :param input_folder (str) : folder containing the input files
     :param modalities_list (list) : modalities to check
+    :param threshold_selected (str) : name of the selected movement detection method
     :return True if any errors occur
     :return False if the script meets an error or a warning"""
     

@@ -47,6 +47,7 @@ def start_calculation(window, selected_threshold):
 
 # Function called when selecting a threshold
 def on_option_change(selected_threshold):
+    """Function to display the selected threshold"""
     print(f"Option sélectionnée : {selected_threshold.get()}")
 
 # Layout 
@@ -121,11 +122,11 @@ def create_window():
         # Threshold selection button
         radio_button_1 = ctk.CTkRadioButton(frame_radio_button, text = "AC > 0", variable = selected_option, value = "AC > 0", command = lambda:on_option_change(selected_option))
         radio_button_2 = ctk.CTkRadioButton(frame_radio_button, text = "Random Forest", variable = selected_option, value = "Random Forest", command = lambda:on_option_change(selected_option))
-        radio_button_3 = ctk.CTkRadioButton(frame_radio_button, text ="Coley", variable = selected_option, value = "Coley", command = lambda:on_option_change(selected_option))
+        #radio_button_3 = ctk.CTkRadioButton(frame_radio_button, text ="Coley", variable = selected_option, value = "Coley", command = lambda:on_option_change(selected_option))
         # Horizontal alignement with grid
         radio_button_1.grid(row = 0, column = 0, padx = 80, pady = 10)
         radio_button_2.grid(row = 0, column = 1, padx = 50, pady = 10)
-        radio_button_3.grid(row = 0, column = 2, padx = 50, pady = 10)
+        #radio_button_3.grid(row = 0, column = 2, padx = 50, pady = 10)
 
 
         # SEPARATING LINE
@@ -171,7 +172,7 @@ def update_progress(idx_interface,progress_bar, progress_interface, message, mes
     :param progress_interface (ctk.CTK) : the main interface window.
     :param message (str) : message to display in the interface windox.
     :param message_label (ctk.CTkLabel) : the label widget to display the message.
-    :param progress_title (ctk.CTkLabel() : title to display in the progess interface. """
+    :param progress_title (ctk.CTkLabel) : title to display in the progess interface. """
     # Update the progress bar value
     try:
         if idx_interface > 0.0:

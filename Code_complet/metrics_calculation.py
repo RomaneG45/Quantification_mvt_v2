@@ -1,6 +1,10 @@
 """This file contains the calculation of different metrics based on dominant and non-dominant arm activity counts.
-Two time metrics : 
-    - Active Duration
+Six time metrics : 
+    - Dominant Active Duration
+    - Non Dominant Active Duration
+    - Bilateral Active Duration
+    - Unilateral Dominant Active Duration
+    - Unilateral Non Dominant Active Duration
     - Time Use Ratio
 Five intensity metrics :
     - Mean Activity Counts
@@ -86,18 +90,20 @@ def maui_baui(dom_AC, non_dom_AC):
     return maui, baui
 
     
-def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, threshold_method, gyro_dom, gyro_non_dom):
+def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, threshold_method):#, gyro_dom, gyro_non_dom):
     """ This function calculates the mean metrics based on the dominant and non-dominant arm activity counts, and the metrics per seconds. 
     :param dom_AC (lst) : dominant arm activity counts.
     :param non_dom_AC (lst) : non dominant arm activity counts.
     :param magnitude_ratio (lst) : magnitude ratio per seconde.
     :param bilateral magnitude (lst) : bilateral magnitude per seconde.
     :param threshold_method (str) : selected threshold method to detect a movement
-    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes 
-    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes 
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes /////////////////////////////////////////////////////////////////
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes /////////////////////////////////////////////////////////////////
     :return dom_AD (float) : dominant active duration.
     :return non_dom_AD (float) : non dominant active duration.
     :return bimanual_AD (float) : bimanual active duration.
+    :return unimanual_dom_AD (float) : unimanual active duration for the dominant UL.
+    :return unimanual_non_dom_AD (float) : unimanual active duration for the non dominant UL.
     :return use_ratio_time (float) : use ratio time.
     :return use_ratio_intensity (float) : use ratio intensity.
     :return dom_mean_AC (float) : dominant mean activity counts per second.
@@ -106,7 +112,7 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, thres
     :return mean_magnitude_ratio (float) : mean magnitude ratio.
     """
     # Active duration and bimanual active duration
-    dom_AD, non_dom_AD, bimanual_AD = active_duration_calculation(threshold_method, dom_AC, non_dom_AC, gyro_dom, gyro_non_dom)
+    dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = active_duration_calculation(threshold_method, dom_AC, non_dom_AC)#, gyro_dom, gyro_non_dom)
 
     if dom_AD != 0:
         use_ratio_time = non_dom_AD / dom_AD
@@ -129,26 +135,28 @@ def mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, thres
     # Mean Magnitude Ratio 
     mean_magnitude_ratio = np.mean(magnitude_ratio)
 
-    return dom_AD, non_dom_AD, bimanual_AD, use_ratio_time, use_ratio_intensity, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio
+    return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD, use_ratio_time, use_ratio_intensity, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio
 
 
-def metrics(dom_AC, non_dom_AC, threshold_method, gyro_dom, gyro_non_dom):
+def metrics(dom_AC, non_dom_AC, threshold_method):#, gyro_dom, gyro_non_dom):
     """ This function calculates various metrics based on the dominant and non-dominant arm activity counts.
     :param dom_AC (list) : dominant arm activity counts.
     :param non_dom_AC (list) : non dominant arm activity counts.
     :param threshold_method (str) : selected threshold method to detect a movement
-    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
-    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes ///////////////////////////////////////////////////////////////////
+    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes ///////////////////////////////////////////////////////////////
     :return df_metrics (dict) : dict containing the metrics.
     """
     magnitude_ratio, bilateral_magnitude = sec_metrics(dom_AC, non_dom_AC)
     maui, baui = maui_baui(dom_AC, non_dom_AC)
-    dom_AD, non_dom_AD, bimanual_AD, use_ratio_time, use_ratio_intensity, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio = mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, threshold_method, gyro_dom, gyro_non_dom)
+    dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD, use_ratio_time, use_ratio_intensity, dom_mean_AC, non_dom_mean_AC, mean_bilateral_magnitude, mean_magnitude_ratio = mean_metrics(dom_AC, non_dom_AC, magnitude_ratio, bilateral_magnitude, threshold_method)#, gyro_dom, gyro_non_dom)
 
     df_metrics = {
         "dom_AD": dom_AD,
         "non_dom_AD": non_dom_AD,
         "bimanual_AD" : bimanual_AD,
+        "unimanual_dom_AD" : unimanual_dom_AD,
+        "unimanual_non_dom_AD" : unimanual_non_dom_AD,
         "use_ratio_time": use_ratio_time,
         "use_ratio_intensity": use_ratio_intensity,
         "dom_mean_AC": dom_mean_AC,

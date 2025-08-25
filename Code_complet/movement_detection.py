@@ -1,4 +1,4 @@
-"""This file classify each second as a "movement" or a "non movement" depending on the selected method defined by the user. It then calculates dominant and non dominant active durations.
+"""This file classify each second as a "movement" or a "non movement" depending on the selected method defined by the user. It then calculates dominant, non dominant, bilateral and unimanual active durations.
 Called in main.py"""
 
 import numpy as np
@@ -6,30 +6,33 @@ from joblib import load
 from scipy.signal import medfilt
 from scipy.ndimage import maximum_filter1d
 
-def active_duration_calculation(selected_method, dom_AC, non_dom_AC, gyro_dom, gyro_non_dom):
+def active_duration_calculation(selected_method, dom_AC, non_dom_AC):#, gyro_dom, gyro_non_dom):
     """
     This function proposes 3 methods to detect movement periods.
     :param selected_method (str) : method selected by the user in the interface, to detect movements
     :param dom_AC (lst) : list of dominant activity counts
     :param non_dom_AC (lst) : list of non dominant activity counts
-    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
-    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
+    :param gyro_dom (dict) : dict of gyroscope data for the X, Y, and Z axes ////////////////////////////////////////////////////////////////////////
+    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes ////////////////////////////////////////////////////////////////////
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration
+    :return bimanual_AD (float) : bimanual active duration 
+    :return unimanual_dom_AD (float) : unimanual active duration for the dominant membre 
+    :return unimanual_non_dom_AD (float) : unimanual active duration for the non dominant membre  
     """
     dom_AD = 0
     non_dom_AD = 0
 
     if selected_method == "AC > 0":
-        dom_AD, non_dom_AD, bimanual_AD = zero_theshold(dom_AC, non_dom_AC)
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = zero_theshold(dom_AC, non_dom_AC)
     
     elif selected_method == "Random Forest":
-        dom_AD, non_dom_AD, bimanual_AD = RF_theshold(dom_AC, non_dom_AC)
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = RF_theshold(dom_AC, non_dom_AC)
 
-    elif selected_method == "Coley":
-        dom_AD, non_dom_AD, bimanual_AD = coley_theshold(dom_AC, non_dom_AC, gyro_dom, gyro_non_dom)
+    #elif selected_method == "Coley":
+        #dom_AD, non_dom_AD, bimanual_AD = coley_theshold(dom_AC, non_dom_AC, gyro_dom, gyro_non_dom)
 
-    return dom_AD, non_dom_AD, bimanual_AD
+    return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD
 
 
 def zero_theshold(dom_AC, non_dom_AC):
@@ -40,6 +43,8 @@ def zero_theshold(dom_AC, non_dom_AC):
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration
     :return bimanual_AD (float) : Bimanual active duration
+    :return unimanual_dom_AD (float) : unimanual active duration for the dominant membre 
+    :return unimanual_non_dom_AD (float) : unimanual active duration for the non dominant membre 
     """
     # Active duration
     dom_AC_array = np.array(dom_AC)
@@ -54,8 +59,19 @@ def zero_theshold(dom_AC, non_dom_AC):
             sum_bimanual_AD += 1
     bimanual_AD = sum_bimanual_AD *100 / len(dom_AC)
 
+    # Unimanual AD
+    sum_unimanual_dom_AD = 0
+    sum_unimanual_non_dom_AD = 0
+    for idx_sec in range(0, len(dom_AC)):
+        if dom_AC[idx_sec] > 0 and non_dom_AC[idx_sec] == 0:
+            sum_unimanual_dom_AD += 1
+        elif dom_AC[idx_sec] == 0 and non_dom_AC[idx_sec] > 0:
+            sum_unimanual_non_dom_AD += 1
+    unimanual_dom_AD = sum_unimanual_dom_AD *100 / len(dom_AC)
+    unimanual_non_dom_AD = sum_unimanual_non_dom_AD *100 / len(non_dom_AC)
 
-    return dom_AD, non_dom_AD, bimanual_AD
+
+    return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD
 
 
 def RF_theshold(dom_AC, non_dom_AC):
@@ -66,6 +82,8 @@ def RF_theshold(dom_AC, non_dom_AC):
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration
     :return bimanual_AD (float) : Bimanual active duration
+    :return unimanual_dom_AD (float) : unimanual active duration for the dominant membre 
+    :return unimanual_non_dom_AD (float) : unimanual active duration for the non dominant membre 
     """
     dom_AD = 0
     non_dom_AD = 0
@@ -90,7 +108,18 @@ def RF_theshold(dom_AC, non_dom_AC):
             sum_bimanual_AD += 1
     bimanual_AD = sum_bimanual_AD *100 / len(dom_AC)
 
-    return dom_AD, non_dom_AD, bimanual_AD
+     # Unimanual AD
+    sum_unimanual_dom_AD = 0
+    sum_unimanual_non_dom_AD = 0
+    for idx_sec in range(0, len(dom_AC)):
+        if dom_mov_pred[idx_sec] == "mouvement" and non_dom_mov_pred[idx_sec] != "mouvement" :
+            sum_unimanual_dom_AD += 1
+        if dom_mov_pred[idx_sec] != "mouvement" and non_dom_mov_pred[idx_sec] == "mouvement" :
+            sum_unimanual_non_dom_AD += 1
+    unimanual_dom_AD = sum_unimanual_dom_AD *100 / len(dom_AC)
+    unimanual_non_dom_AD = sum_unimanual_non_dom_AD *100 / len(non_dom_AC)
+
+    return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD
 
 def coley_theshold(dom_AC, non_dom_AC, gyro_dom, gyro_non_dom):
     """

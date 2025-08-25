@@ -30,7 +30,7 @@ def select_output_file(file_path, ID, therapy_name):
     my_sheet = my_wb.active
 
     # Initialize column info : define one metrics per row
-    lst_info_col = ["ID du patient","Groupe","Jours", "Durée d'enregistrement (en min)", "Métriques de temps","Dominant active duration (en %)","Non dominant active duration (en %)","Bilateral active duration (en %)", "Time use ratio","Métriques d'intensité","Dominant mean AC","Non dominant mean AC","Mean bilateral magnitude","Magnitude ratio","MAUI","BAUI", "Intensity Use ratio"]
+    lst_info_col = ["ID du patient","Groupe","Jours", "Durée d'enregistrement (en min)", "Métriques de temps","Dominant active duration (en %)","Non dominant active duration (en %)","Bilateral active duration (en %)", "Unilateral dominant active duration (en %)", "Unilateral non dominant active duration (en %)", "Time use ratio","Métriques d'intensité","Dominant mean AC","Non dominant mean AC","Mean bilateral magnitude","Magnitude ratio","MAUI","BAUI", "Intensity Use ratio"]
     for idx in range(1, len(lst_info_col) + 1):
         cell = my_sheet.cell(row = idx, column = 1)
         cell.value = lst_info_col[idx-1]
@@ -89,9 +89,9 @@ def write_in_file(my_wb, file_path, record_time, idx_day, day, lst_time_metrics,
         cell = my_sheet.cell(row = idx_row, column = idx_day + 1)
         cell.value = lst_time_metrics[idx_row - 6]
     
-    for idx_row in range(11, len(lst_intensity_metrics) + 11):
+    for idx_row in range(13, len(lst_intensity_metrics) + 13):
         cell = my_sheet.cell(row = idx_row, column = idx_day + 1)
-        cell.value = lst_intensity_metrics[idx_row - 11]
+        cell.value = lst_intensity_metrics[idx_row - 13]
 
 
     """************************* Save the file with the therapy name ****************************"""
