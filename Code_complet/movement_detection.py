@@ -1,5 +1,5 @@
 """This file classify each second as a "movement" or a "non movement" depending on the selected method defined by the user. It then calculates dominant, non dominant, bilateral and unimanual active durations.
-Called in main.py"""
+Called in metrics_calculation.py"""
 
 import numpy as np
 from joblib import load

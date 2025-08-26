@@ -285,5 +285,5 @@ for modality in modalities_list:
             idx_interface += 1
 
 # Notify the user that the calculations are finished
-messagebox.showinfo("Fin", f"Les résultats sont disponnibles dans le dossier : {input_folder}")
+messagebox.showinfo("Fin", f"Les résultats sont disponibles dans le dossier : {input_folder}")
 
