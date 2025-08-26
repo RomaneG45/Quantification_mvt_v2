@@ -57,6 +57,12 @@ Fichiers_tests : dossier contenant les fichiers de test qui ont été utilisés 
 
 Ex_arborescence : dossier contenant des exemples de fichiers d'entrée. Utilisés pour tester le fonctionnement des scripts actuels.
 
+## Ajouter/Modifier les méthodes de seuillage du mouvement
+Pour modifier les méthodes de seuillage du mouvement, il faut ajuster l'interface pour que l'utilisateur puisse choisir une nouvelle méthode et modifier le script de calcul.
+    - Modification de l'interface (fichier interface.py) : dans la fonction create_window(), ajouter un bouton radio à la frame "frame_radio_button" : radio_button = ctk.CTkRadioButton(frame_radio_button, text = "NOUVEAU NOM", variable = selected_option, value = "NOUVEAU NOM", command = lambda:on_option_change(selected_option)) puis radio_button_1.grid() en ajustant les lignes, colonne et padding.
+    - Modification du script de calcul (fichier movement_detection.py) : dans la fonction principale (active_duration_calculation()), ajouter une condition d'égalité entre le nom de la méthode et la "value" du bouton radio de l'interface, puis ajouter les calculs du nouveau seuil dans une fonction indépendante.
+         
+
 ## Entrée 
 Doit se trouver au minimum dans le dossier d’entrée :
   - Stage_1_Droit.csv
