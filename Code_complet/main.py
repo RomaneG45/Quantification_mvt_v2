@@ -184,6 +184,8 @@ for modality in modalities_list:
                 
                 # Get the date and hour of the activity count
                 count_date = dom_counts["Timestamp"][data_idx].date()
+                print(dom_counts["Timestamp"][0])
+                print(non_dom_counts["Timestamp"][0])
 
                 # Loop on the comparison modalities
                 for time_lapse_name in time_comp[modality].keys():

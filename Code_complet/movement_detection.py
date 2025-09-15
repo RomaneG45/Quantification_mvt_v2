@@ -92,8 +92,8 @@ def RF_theshold(dom_AC, non_dom_AC):
     reshaped_non_dom_AC = np.vstack(np.array(non_dom_AC))
     
     # Active duration
-    RF_model_dom = load('Random_Forest_dom.joblib') # the model can be changed
-    RF_model_non_dom = load('Random_Forest_non_dom.joblib') # the model can be changed
+    RF_model_dom = load('model_data_7_kfold_non_dom.joblib') # the model can be changed
+    RF_model_non_dom = load('model_data_7_kfold_non_dom.joblib') # the model can be changed
     # Movement predictions
     dom_mov_pred = RF_model_dom.predict(reshaped_dom_AC)
     non_dom_mov_pred = RF_model_non_dom.predict(reshaped_non_dom_AC)
