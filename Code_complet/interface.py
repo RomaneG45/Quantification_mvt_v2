@@ -122,11 +122,11 @@ def create_window():
         # Threshold selection button
         radio_button_1 = ctk.CTkRadioButton(frame_radio_button, text = "AC > 0", variable = selected_option, value = "AC > 0", command = lambda:on_option_change(selected_option))
         radio_button_2 = ctk.CTkRadioButton(frame_radio_button, text = "Random Forest", variable = selected_option, value = "Random Forest", command = lambda:on_option_change(selected_option))
-        #radio_button_3 = ctk.CTkRadioButton(frame_radio_button, text ="Coley", variable = selected_option, value = "Coley", command = lambda:on_option_change(selected_option))
+        radio_button_3 = ctk.CTkRadioButton(frame_radio_button, text ="Coley", variable = selected_option, value = "Coley", command = lambda:on_option_change(selected_option))
         # Horizontal alignement with grid
         radio_button_1.grid(row = 0, column = 0, padx = 80, pady = 10)
         radio_button_2.grid(row = 0, column = 1, padx = 50, pady = 10)
-        #radio_button_3.grid(row = 0, column = 2, padx = 50, pady = 10)
+        radio_button_3.grid(row = 0, column = 2, padx = 50, pady = 10)
 
 
         # SEPARATING LINE
@@ -148,7 +148,7 @@ def create_window():
         # Label to display the selected folder
         global folder_label
         folder_label= ctk.CTkLabel(frame_choose_button, text = "Aucun dossier choisi", text_color = "gray", anchor = "w", width = 300)
-        folder_label.pack(side = "left", padx = (10,0))#pady=(0, 20))
+        folder_label.pack(side = "left", padx = (10,0))
 
 
         # FINAL BUTTON

@@ -49,13 +49,14 @@ def test_error(input_folder, modalities_list, threshold_selected):
                 idx_file_modality += 1
 
             # Check if the info file for the modality exists
-            if modality + "_Info.xlsx" not in os.listdir(input_folder):
+            if modality + "_Info.xlsx" not in os.listdir(input_folder): #///////////////////////////////////////////////////////// Pour mettre un nom d'enfant dans le nom du fichier
                 # Notify the user that there is no info file in the inupt folder
                 messagebox.showerror("Fin", f"Aucun fichier {modality + '_Info.xlsx'} dans le dossier sélectionné. Ajoutez le fichier avant de relancer le programme.")
                 return False
         
 
-            """ ******************************************************** Checks if the input files contains the type **************************************************************************"""
+            """ ******************************************************** Checks if the input files contains the right type **************************************************************************"""
+            #///////////////////////////////////////////////////////// Pour mettre un nom d'enfant dans le nom du fichier ///////////////////////////////////////////////////////////
             # Select the Info file in the input folder
             input_info_file = input_folder + "/" + modality + "_Info.xlsx"
             # Load excel file containing the information
@@ -78,17 +79,17 @@ def test_error(input_folder, modalities_list, threshold_selected):
                         messagebox.showerror("Fin", f"La valeur de la cellule HEURE DE FIN D'ACTIVITE {cell.row} dans le fichier {modality}_Info.xlsx n'est pas de type heure.  Modifiez les valeurs avant de relancer le programme.")
                         return False
 
-            """ ******************************************************** Checks if the input files contains the type **************************************************************************"""
-
-            full_path = os.path.join(input_folder, file)
-            # Check if the selected item is a file
-            if os.path.isfile(full_path):
-                try:
-                    with open(full_path, 'a'):
-                        pass
-                except PermissionError:
-                    messagebox.showerror("Fin", f"Le fichier {file} est ouvert. Fermez le avant de relancer le programme.")
-                    return False
-            else:
-                continue
+            """ ******************************************************** Checks if the input files are closed (necessary to be read) **************************************************************************"""
+            if file.startswith(modality+ "_" + str(idx_file_modality)) or file.startswith("Résultat"):
+                full_path = os.path.join(input_folder, file)
+                # Check if the selected item is a file
+                if os.path.isfile(full_path):
+                    try:
+                        with open(full_path, 'a'):
+                            pass
+                    except PermissionError:
+                        messagebox.showerror("Fin", f"Le fichier {file} est ouvert. Fermez le avant de relancer le programme.")
+                        return False
+                else:
+                    continue
     return True

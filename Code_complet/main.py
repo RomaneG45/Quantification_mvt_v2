@@ -18,6 +18,7 @@ import openpyxl
 from tkinter import messagebox
 import threading
 import time 
+import pandas as pd
 
 #from segment_file import
 from interface import create_window, create_progress_interface, update_progress
@@ -81,9 +82,9 @@ for modality in modalities_list:
     # Initialize the index of record file for the modality (ex: Stage 1)
     idx_file_modality = 1
 
-    """# Initialize the gyroscope data 
-    gyro_dom = {'X': [], 'Y': [], 'Z': []}
-    gyro_non_dom = {'X': [], 'Y': [], 'Z': []}"""
+    # Initialize the gyroscope data 
+    gyro_dom = {'X': [], 'Y': [], 'Z': []} 
+    gyro_non_dom = {'X': [], 'Y': [], 'Z': []}
 
     # Browse files in the input folder
     for file in os.listdir(input_folder):  
@@ -95,7 +96,7 @@ for modality in modalities_list:
             never_read = False
 
             # Select the Info file in the input folder
-            input_info_file = input_folder + "/" + modality + "_Info.xlsx"
+            input_info_file = input_folder + "/" + modality + "_Info.xlsx" #///////////////////////////////////////////////////////// Pour mettre un nom d'enfant dans le nom du fichier
 
             # Load excel file containing the information
             info_wb = openpyxl.load_workbook(input_info_file)
@@ -154,27 +155,20 @@ for modality in modalities_list:
 
             """****************************************************** Getting gyroscope data ********************************************************************************************"""
             # Get the gyroscope data
-
-            #extension = os.path.splitext(file)[1] 
-        
-            #if extension == ".csv":
-            # Get the gyroscope data
-            """non_dom_data_file = pd.read_csv(file_non_dom, skiprows = 10, decimal = ",") #data_file = pd.read_csv(input_folder + "/" + file, header = 10, names = ["Timestamp","Accelerometer X"])    
-            dom_data_file = pd.read_csv(file_dom, skiprows = 10, decimal = ",")#data_file = data_file[["Gyroscope X", "Gyroscope Y", "Gyroscope Z"]].astype(float)
-
-                #if file[-9:-4] == non_dom_UL[-5:]:
+            non_dom_data_file =   pd.read_csv(file_non_dom , header = 10, names = ["Timestamp","Accelerometer X","Accelerometer Y","Accelerometer Z","Temperature","Gyroscope X","Gyroscope Y","Gyroscope Z","Magnetometer X","Magnetometer Y","Magnetometer Z"]) 
+            dom_data_file = pd.read_csv(file_dom , header = 10, names = ["Timestamp","Accelerometer X","Accelerometer Y","Accelerometer Z","Temperature","Gyroscope X","Gyroscope Y","Gyroscope Z","Magnetometer X","Magnetometer Y","Magnetometer Z"])   
+            
+            # Dominant
+            gyro_dom['X'].extend(dom_data_file["Gyroscope X"].values.tolist())
+            gyro_dom['Y'].extend(dom_data_file["Gyroscope Y"].values.tolist()) 
+            gyro_dom['Z'].extend(dom_data_file["Gyroscope Z"].values.tolist()) 
+            # Non dominant
             gyro_non_dom['X'].extend(non_dom_data_file["Gyroscope X"].values.tolist()) 
             gyro_non_dom['Y'].extend(non_dom_data_file["Gyroscope Y"].values.tolist()) 
             gyro_non_dom['Z'].extend(non_dom_data_file["Gyroscope Z"].values.tolist())
-                
-                #elif file[-9:-4] == dom_UL[-5:]:
-            gyro_dom['X'].extend(dom_data_file["Gyroscope X"].values.tolist())
-            gyro_dom['Y'].extend(dom_data_file["Gyroscope Y"].values.tolist()) 
-            gyro_dom['Z'].extend(dom_data_file["Gyroscope Z"].values.tolist()) """
 
 
-            """***************************************************** Selecting the AC from the time wanted intervals **************************************************************************"""
-
+            """***************************************************** Selecting the AC from the time wanted intervals **************************************************************************"""            
             # Loop on the number of epoches in the smallest UL file (dom_AC and non_dom_AC will have the same number of rows)
             for data_idx in range(0, min(len(dom_counts), len(non_dom_counts))) : 
                 
@@ -184,8 +178,6 @@ for modality in modalities_list:
                 
                 # Get the date and hour of the activity count
                 count_date = dom_counts["Timestamp"][data_idx].date()
-                print(dom_counts["Timestamp"][0])
-                print(non_dom_counts["Timestamp"][0])
 
                 # Loop on the comparison modalities
                 for time_lapse_name in time_comp[modality].keys():
@@ -196,13 +188,13 @@ for modality in modalities_list:
 
                         # Check if the date for the day already exists
                         if count_date not in AC_for_comp[modality][time_lapse_name].keys():
-                            #AC_for_comp[modality][time_lapse_name][count_date] =  {"dom_AC" : [],"non_dom_AC" : [], "dom_gyro" : {}, "non_dom_gyro" : {}} 
-                            AC_for_comp[modality][time_lapse_name][count_date] =  {"dom_AC" : [],"non_dom_AC" : []}
+                            AC_for_comp[modality][time_lapse_name][count_date] =  {"dom_AC" : [],"non_dom_AC" : [], "dom_gyro" : {'X': [], 'Y': [], 'Z': []}, "non_dom_gyro" : {'X': [], 'Y': [], 'Z': []}}
                         
                         # Get start_time and end_time of the recording from the day
                         lst_start_time = time_lapse[count_date]["start_time"]
                         lst_end_time = time_lapse[count_date]["end_time"] 
 
+                        
                         # Compare the time of the activity count with the start and end time of the activity
                         # For Stage, there can be several time lapses for the same day (ex: 9h-12h30 and 14h-16h) (need a loop)
                         if lst_start_time != [] and lst_end_time != [] and modality == "Stage":
@@ -211,24 +203,43 @@ for modality in modalities_list:
                                 # Add the new AC 
                                 lst_start_time[idx_hour]
                                 if dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") >= lst_start_time[idx_hour] and dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") < lst_end_time[idx_hour]:
+                                    
+                                    # Add AC
                                     AC_for_comp[modality][time_lapse_name][count_date]["dom_AC"].append(dom_counts.loc[data_idx, "AC"])
                                     AC_for_comp[modality][time_lapse_name][count_date]["non_dom_AC"].append(non_dom_counts.loc[data_idx, "AC"])
-                                    """if AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"] == {}:
-                                        AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"] = gyro_dom
-                                    if AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"] == {}:
-                                        AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"] = gyro_non_dom"""
+
+                                    # Add gyroscope data
+                                    for considering_30Hz in range(30):
+                                        # Dominant
+                                        AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"]['X'].append(gyro_dom['X'][data_idx*30 + considering_30Hz])
+                                        AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"]['Y'].append(gyro_dom['Y'][data_idx*30 + considering_30Hz])
+                                        AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"]['Z'].append(gyro_dom['Z'][data_idx*30 + considering_30Hz])
+                                        # Non dominant
+                                        AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"]['X'].append(gyro_non_dom['X'][data_idx*30 + considering_30Hz]) 
+                                        AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"]['Y'].append(gyro_non_dom['Y'][data_idx*30 + considering_30Hz])
+                                        AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"]['Z'].append(gyro_non_dom['Z'][data_idx*30 + considering_30Hz])
+                       
                        # Compare the time of the activity count with the start and end time of the activity
                        # For Vie_quotidienne, there is only one time lapse for the day, time can be saved by not calling the loop
                         elif lst_start_time != [] and lst_end_time != [] and modality == "Vie_quotidienne":
-                            # Add the new AC 
+                            # Add the new AC and gyroscope data of selected time lapses
                             if dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") >= lst_start_time[0] and dom_counts["Timestamp"][data_idx].strftime("%H:%M:%S") < lst_end_time[0]:
+                                
+                                # Add AC
                                 AC_for_comp[modality][time_lapse_name][count_date]["dom_AC"].append(dom_counts.loc[data_idx, "AC"])
                                 AC_for_comp[modality][time_lapse_name][count_date]["non_dom_AC"].append(non_dom_counts.loc[data_idx, "AC"])
-                                """if AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"] == {}:
-                                    AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"] = gyro_dom
-                                if AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"] == {}:
-                                    AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"] = gyro_non_dom"""
-
+                                
+                                # Add gyroscope data
+                                for considering_30Hz in range(0,30):
+                                    # Dominant
+                                    AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"]['X'].append(gyro_dom['X'][data_idx*30 + considering_30Hz]) 
+                                    AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"]['Y'].append(gyro_dom['Y'][data_idx*30 + considering_30Hz])
+                                    AC_for_comp[modality][time_lapse_name][count_date]["dom_gyro"]['Z'].append(gyro_dom['Z'][data_idx*30 + considering_30Hz])
+                                    # Non dominant
+                                    AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"]['X'].append(gyro_non_dom['X'][data_idx*30 + considering_30Hz]) 
+                                    AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"]['Y'].append(gyro_non_dom['Y'][data_idx*30 + considering_30Hz])
+                                    AC_for_comp[modality][time_lapse_name][count_date]["non_dom_gyro"]['Z'].append(gyro_non_dom['Z'][data_idx*30 + considering_30Hz])
+            
             """************************************************* Explore the AC lists for the different time laps to calculate the metrics ********************************************************"""
             #Initialize the activity count data
             dom_AC = []
@@ -242,17 +253,18 @@ for modality in modalities_list:
                 idx_day = 1
 
                 for day in AC_for_comp[modality][comparison]:
+                    # Declaration of the AC and gyroscope data, for the selected time lapses
                     dom_AC = AC_for_comp[modality][comparison][day]["dom_AC"]
                     non_dom_AC = AC_for_comp[modality][comparison][day]["non_dom_AC"]
-                    """dom_gyro = AC_for_comp[modality][comparison][day]["dom_gyro"]
-                    non_dom_gyro = AC_for_comp[modality][comparison][day]["non_dom_gyro"]"""
+                    dom_gyro = AC_for_comp[modality][comparison][day]["dom_gyro"]
+                    non_dom_gyro = AC_for_comp[modality][comparison][day]["non_dom_gyro"]
 
                     if dom_AC != [] and non_dom_AC != []:
-                        """print("len gyro dom[X]", len(dom_gyro['X']))
-                        print("len gyro non dom[X]", len(non_dom_gyro['X']))"""
+                        print("len gyro dom[X]", len(dom_gyro['X']))
+                        print("len gyro non dom[X]", len(non_dom_gyro['X']))
 
                         """****************************** Metrics calculation for the selected time lapse ******************************"""
-                        dict_metrics = metrics(dom_AC, non_dom_AC, threshold_selected)#, dom_gyro, non_dom_gyro)
+                        dict_metrics = metrics(dom_AC, non_dom_AC, threshold_selected, dom_gyro, non_dom_gyro)
                         
                         print(f"Dominant Active Duration for the day {count_date}: {dict_metrics['dom_AD']}")
                         print(f"Non Dominant Active Duration for the day {count_date} : {dict_metrics['non_dom_AD']}\n")

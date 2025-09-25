@@ -1,4 +1,5 @@
-"""This file select the time interval to analyse depending on the modality and the therapy recorded (HABIT/PARTNER and daily_life center or daily life at home)
+"""This file select the time interval to analyse depending on the modality and the therapy recorded (HABIT/PARTNER and daily_life center or daily life at home).
+To select the time interval, it reads the Infos file in the entry files.
 called in main.py"""
 
 from datetime import datetime, time
@@ -24,13 +25,11 @@ def segment_time(modality, therapy, info_sheet):
 
         if modality == "Vie_quotidienne":
 
+            # Get the date
             if row[4].value is not None: #row[4] correspond to the E column = the date column
                 row_date = row[4].value.date()
                 comp_vie_quot[row_date] = {"start_time" : ["08:00:00"], "end_time" : ["20:00:00"]}
-
-            # Get the date
-            if row[4].value is not None:
-                row_date = row[4].value.date()
+                
                 comp_5h[row_date] = {"start_time" : [], "end_time" : []}
                 comp_1h30[row_date] = {"start_time" : [], "end_time" : []}
 
@@ -40,7 +39,6 @@ def segment_time(modality, therapy, info_sheet):
             if row[4].value is not None:
                 # Create a new date key
                 row_date = row[4].value.date()
-                # //////////////////////////////////////////////////////////////////////: AJOUTER : si row_date not in comp_5h.keys() et comp_1h30.keys()
                 if row_date not in comp_5h.keys():
                     comp_5h[row_date] = {"start_time" : [], "end_time" : []}
                 if row_date not in comp_1h30.keys():

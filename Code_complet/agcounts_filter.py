@@ -57,8 +57,8 @@ def get_counts_csv(
 def convert_counts_csv(
     file,
     outfile,
-    freq: int=100,
-    epoch: int=60,
+    freq: int=30,
+    epoch: int=1,
     verbose: bool = False,
     time_column: str = None,
     progress_data: dict = None,
@@ -74,11 +74,11 @@ def convert_counts_csv(
 
 def convert_AC(file_dom, file_non_dom,nb_file_to_read,idx_interface, progress_data=None,):
 
-    dom_counts = get_counts_csv(file_dom, freq=100, epoch=1, progress_data=progress_data, progress_idx= 1/12 * (int(idx_interface) / nb_file_to_read), nb_file_to_read=nb_file_to_read, idx_interface=idx_interface)
+    dom_counts = get_counts_csv(file_dom, freq=30, epoch=1, progress_data=progress_data, progress_idx= 1/12 * (int(idx_interface) / nb_file_to_read), nb_file_to_read=nb_file_to_read, idx_interface=idx_interface)
     dom_counts = convert_counts_csv(
         file_dom,
         outfile="Activity_counts_files/dom_counts.csv",
-        freq=100,
+        freq=30,
         epoch=1,
         verbose=True,
         time_column="Timestamp",
@@ -87,11 +87,11 @@ def convert_AC(file_dom, file_non_dom,nb_file_to_read,idx_interface, progress_da
         nb_file_to_read=nb_file_to_read
     )
 
-    non_dom_counts = get_counts_csv(file_non_dom, freq=100, epoch=1, progress_data=progress_data, progress_idx=4/12*int(idx_interface)/nb_file_to_read, nb_file_to_read=nb_file_to_read,idx_interface=idx_interface)
+    non_dom_counts = get_counts_csv(file_non_dom, freq=30, epoch=1, progress_data=progress_data, progress_idx=4/12*int(idx_interface)/nb_file_to_read, nb_file_to_read=nb_file_to_read,idx_interface=idx_interface)
     non_dom_counts = convert_counts_csv(
         file_non_dom,
         outfile="Activity_counts_files/non_dom_counts.csv",
-        freq=100,
+        freq=30,
         epoch=1,
         verbose=True,
         time_column="Timestamp",
