@@ -24,22 +24,31 @@ def active_duration_calculation(selected_method, dom_AC, non_dom_AC, gyro_dom, g
     non_dom_AD = 0
 
     if selected_method == "AC > 0":
-        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = zero_theshold(dom_AC, non_dom_AC)
-    
-    elif selected_method == "Random Forest":
-        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = RF_theshold(dom_AC, non_dom_AC)
-
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_theshold_1s(dom_AC, non_dom_AC, threshold_value = 0)
+    elif selected_method == "AC > 2":
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_theshold_1s(dom_AC, non_dom_AC,threshold_value = 2)
+    elif selected_method == "2AC > 0":
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_threshold_with_window(dom_AC, non_dom_AC,threshold_value=0, window_length=2)
+    elif selected_method == "2AC > 2":
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_threshold_with_window(dom_AC, non_dom_AC,threshold_value=2, window_length=2)
+    elif selected_method == "2AC > 75":
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_threshold_with_window(dom_AC, non_dom_AC,threshold_value=75, window_length=2)
+    elif selected_method == "10AC > 0":
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_threshold_with_window(dom_AC, non_dom_AC,threshold_value=0, window_length=10)
+    elif selected_method == "10AC > 2":
+        dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = count_threshold_with_window(dom_AC, non_dom_AC,threshold_value=2, window_length=10)
     elif selected_method == "Coley":
         dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD = coley_theshold(gyro_dom, gyro_non_dom)
 
     return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD
 
 
-def zero_theshold(dom_AC, non_dom_AC):
+def count_theshold_1s(dom_AC, non_dom_AC, threshold_value):
     """
-    This functin calculates active duration by detecting an activity for an AC > 0.
+    This functin calculates active duration by detecting an activity for an AC > threshold_value.
     :param dom_AC (lst) : list of dominant activity counts
     :param non_dom_AC (lst) : list of non dominant activity counts
+    :param threshold_value (int) : value of the threshold to detect movement
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration
     :return bimanual_AD (float) : Bimanual active duration
@@ -49,13 +58,13 @@ def zero_theshold(dom_AC, non_dom_AC):
     # Active duration
     dom_AC_array = np.array(dom_AC)
     non_dom_AC_array = np.array(non_dom_AC)
-    dom_AD = np.sum(dom_AC_array > 0) * 100 / len(dom_AC_array) 
-    non_dom_AD = np.sum(non_dom_AC_array > 0) * 100 / len(non_dom_AC_array) 
+    dom_AD = np.sum(dom_AC_array > threshold_value) * 100 / len(dom_AC_array) 
+    non_dom_AD = np.sum(non_dom_AC_array > threshold_value) * 100 / len(non_dom_AC_array) 
 
     # Bimanual active duration
     sum_bimanual_AD = 0
     for idx_sec in range(0, len(dom_AC)):
-        if dom_AC[idx_sec] > 0 and non_dom_AC[idx_sec] > 0:
+        if dom_AC[idx_sec] > threshold_value and non_dom_AC[idx_sec] > threshold_value:
             sum_bimanual_AD += 1
     if len(dom_AC) != 0 :
         bimanual_AD = sum_bimanual_AD *100 / len(dom_AC)
@@ -64,9 +73,9 @@ def zero_theshold(dom_AC, non_dom_AC):
     sum_unimanual_dom_AD = 0
     sum_unimanual_non_dom_AD = 0
     for idx_sec in range(0, len(dom_AC)):
-        if dom_AC[idx_sec] > 0 and non_dom_AC[idx_sec] == 0:
+        if dom_AC[idx_sec] > threshold_value and non_dom_AC[idx_sec] == threshold_value:
             sum_unimanual_dom_AD += 1
-        elif dom_AC[idx_sec] == 0 and non_dom_AC[idx_sec] > 0:
+        elif dom_AC[idx_sec] == threshold_value and non_dom_AC[idx_sec] > threshold_value:
             sum_unimanual_non_dom_AD += 1
     
     if len(dom_AC) != 0 :
@@ -80,55 +89,58 @@ def zero_theshold(dom_AC, non_dom_AC):
     return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD
 
 
-def RF_theshold(dom_AC, non_dom_AC):
+
+def count_threshold_with_window(dom_AC, non_dom_AC,threshold_value, window_length):
     """
-    This functin calculates active duration by detecting an activity thanks to a pretrained Random Forest Classifier.
+    This function calculates active duration by detecting an activity for an AC*window_lentgh > threshold_value.
     :param dom_AC (lst) : list of dominant activity counts
     :param non_dom_AC (lst) : list of non dominant activity counts
+    :param threshold_value (int) : value of the threshold intensity to detect a movement
+    :param window_length (int) : value of the length of the window (ex : 2s or 10s)
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration
     :return bimanual_AD (float) : Bimanual active duration
     :return unimanual_dom_AD (float) : unimanual active duration for the dominant membre 
     :return unimanual_non_dom_AD (float) : unimanual active duration for the non dominant membre 
     """
-    dom_AD = 0
-    non_dom_AD = 0
-    # Reshape dom_AC and non_dom_AC for random forest
-    reshaped_dom_AC = np.vstack(np.array(dom_AC))
-    reshaped_non_dom_AC = np.vstack(np.array(non_dom_AC))
-    
     # Active duration
-    RF_model_dom = load('RF_dom.joblib') # the model can be changed
-    RF_model_non_dom = load('RF_non_dom.joblib') # the model can be changed
-    # Movement predictions
-    dom_mov_pred = RF_model_dom.predict(reshaped_dom_AC)
-    non_dom_mov_pred = RF_model_non_dom.predict(reshaped_non_dom_AC)
-    # Calculating active duration
-    dom_AD = np.sum(dom_mov_pred == "mouvement") * 100 / len(dom_AC) 
-    non_dom_AD = np.sum(non_dom_mov_pred == "mouvement") * 100 / len(non_dom_AC) 
+    dom_AC_array = np.array(dom_AC)
+    non_dom_AC_array = np.array(non_dom_AC)
+    sum_dom_AD = 0
+    sum_non_dom_AD = 0
+    for value in range (0, len(dom_AC_array), window_length):
+        # if the sum of 2 (or window length) consecutive secondes intensity are greater than the threshold_value, there is a movement
+        if np.sum(dom_AC_array[value:value + window_length])  > threshold_value:
+            sum_dom_AD += 1
+    for value in range(0, len(non_dom_AC_array), window_length):
+        # if the sum of 2 (or window length) consecutive secondes intensity are greater than the threshold_value, there is a movement
+        if np.sum(non_dom_AC_array[value:value+window_length]) > threshold_value:
+            sum_non_dom_AD += 1
+    dom_AD = sum_dom_AD * 100 / (len(dom_AC_array) / window_length)
+    non_dom_AD =  sum_non_dom_AD * 100 / (len(non_dom_AC_array) / window_length)
 
     # Bimanual active duration
     sum_bimanual_AD = 0
-    for idx_sec in range(0, min(len(dom_mov_pred), len(non_dom_mov_pred))):
-        if dom_mov_pred[idx_sec] == "mouvement" and non_dom_mov_pred[idx_sec] == "mouvement" :
+    for idx_sec in range(0, len(dom_AC),window_length):
+        if np.sum(dom_AC_array[idx_sec:idx_sec+window_length]) > threshold_value and np.sum(non_dom_AC_array[idx_sec:idx_sec+window_length]) > threshold_value:
             sum_bimanual_AD += 1
     if len(dom_AC) != 0 :
-        bimanual_AD = sum_bimanual_AD *100 / len(dom_AC)
+        bimanual_AD = sum_bimanual_AD *100 / (len(dom_AC)/window_length)
 
-     # Unimanual AD
+    # Unimanual AD
     sum_unimanual_dom_AD = 0
     sum_unimanual_non_dom_AD = 0
-    for idx_sec in range(0, len(dom_AC)):
-        if dom_mov_pred[idx_sec] == "mouvement" and non_dom_mov_pred[idx_sec] != "mouvement" :
+    for idx_sec in range(0, len(dom_AC), window_length):
+        if np.sum(dom_AC[idx_sec:idx_sec+window_length]) > threshold_value and np.sum(non_dom_AC[idx_sec:idx_sec+window_length]) <= threshold_value:
             sum_unimanual_dom_AD += 1
-        if dom_mov_pred[idx_sec] != "mouvement" and non_dom_mov_pred[idx_sec] == "mouvement" :
+        elif np.sum(dom_AC[idx_sec:idx_sec+window_length]) <= threshold_value and np.sum(non_dom_AC[idx_sec:idx_sec+window_length]) > threshold_value:
             sum_unimanual_non_dom_AD += 1
     
     if len(dom_AC) != 0 :
-        unimanual_dom_AD = sum_unimanual_dom_AD *100 / len(dom_AC)
-    if len(non_dom_AC) != 0 : 
-        unimanual_non_dom_AD = sum_unimanual_non_dom_AD *100 / len(non_dom_AC)
-
+        unimanual_dom_AD = sum_unimanual_dom_AD *100 / (len(dom_AC)/window_length)
+    if len(non_dom_AC) != 0 :
+        unimanual_non_dom_AD = sum_unimanual_non_dom_AD *100 / (len(non_dom_AC)/window_length)
+    
     print("len dom AC dans movement_detection: ", len(dom_AC))
 
     return dom_AD, non_dom_AD, bimanual_AD, unimanual_dom_AD, unimanual_non_dom_AD
@@ -138,7 +150,7 @@ def coley_theshold(gyro_dom, gyro_non_dom):
     """
     This function calculates active duration by detecting an activity with Coley algorithm (cf mindmaze protocol).
     :param gyro_dom (dict) : dict gyroscope data for the X, Y, and Z axes
-    :param gyro_non_dom : dict of gyroscope data for the X, Y, and Z axes
+    :param gyro_non_dom (dict) : dict of gyroscope data for the X, Y, and Z axes
     :return dom_AD (float) : Dominant active duration
     :return non_dom_AD (float) : Non dominant active duration 
     :return bimanual_AD (float) : Bimanual active duration

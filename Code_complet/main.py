@@ -260,9 +260,6 @@ for modality in modalities_list:
                     non_dom_gyro = AC_for_comp[modality][comparison][day]["non_dom_gyro"]
 
                     if dom_AC != [] and non_dom_AC != []:
-                        print("len gyro dom[X]", len(dom_gyro['X']))
-                        print("len gyro non dom[X]", len(non_dom_gyro['X']))
-
                         """****************************** Metrics calculation for the selected time lapse ******************************"""
                         dict_metrics = metrics(dom_AC, non_dom_AC, threshold_selected, dom_gyro, non_dom_gyro)
                         

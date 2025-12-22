@@ -69,7 +69,7 @@ def create_window():
         icon = PhotoImage(file = image_path)
         window.iconphoto(True, icon)
         window.title("Actinalyseur")
-        window.geometry("650x380")
+        window.geometry("700x470")
 
         # Load image
         folder_image_path = os.path.join(script_dir, "Images", "folder_image.png")
@@ -87,7 +87,7 @@ def create_window():
         frame_please.pack(fill = "x", padx = (30,0),expand = True)
 
         frame_choose_button = ctk.CTkFrame(frame_text, fg_color = "transparent" )
-        frame_choose_button.pack(fill = "x", expand = True, padx = (30,0), pady = (20,0))
+        frame_choose_button.pack(fill = "x", expand = True, padx = (30,0), pady = (20,0)) 
 
         frame_separating_line = ctk.CTkFrame(window, fg_color = "transparent" )
         frame_separating_line.pack(fill = "x", expand = True)
@@ -121,12 +121,23 @@ def create_window():
 
         # Threshold selection button
         radio_button_1 = ctk.CTkRadioButton(frame_radio_button, text = "AC > 0", variable = selected_option, value = "AC > 0", command = lambda:on_option_change(selected_option))
-        radio_button_2 = ctk.CTkRadioButton(frame_radio_button, text = "Random Forest", variable = selected_option, value = "Random Forest", command = lambda:on_option_change(selected_option))
-        radio_button_3 = ctk.CTkRadioButton(frame_radio_button, text ="Coley", variable = selected_option, value = "Coley", command = lambda:on_option_change(selected_option))
+        radio_button_2 = ctk.CTkRadioButton(frame_radio_button, text ="AC > 2", variable = selected_option, value = "AC > 2", command = lambda:on_option_change(selected_option))
+        radio_button_3 = ctk.CTkRadioButton(frame_radio_button, text = "2AC > 0", variable = selected_option, value = "2AC > 0", command = lambda:on_option_change(selected_option))
+        radio_button_4 = ctk.CTkRadioButton(frame_radio_button, text = "2AC > 2", variable = selected_option, value = "2AC > 2", command = lambda:on_option_change(selected_option))
+        radio_button_5 = ctk.CTkRadioButton(frame_radio_button, text ="10AC > 0", variable = selected_option, value = "10AC > 0", command = lambda:on_option_change(selected_option))
+        radio_button_6 = ctk.CTkRadioButton(frame_radio_button, text ="10AC > 2", variable = selected_option, value = "10AC > 2", command = lambda:on_option_change(selected_option))
+        radio_button_7 = ctk.CTkRadioButton(frame_radio_button, text ="2AC > 75", variable = selected_option, value = "2AC > 75", command = lambda:on_option_change(selected_option))
+        radio_button_8 = ctk.CTkRadioButton(frame_radio_button, text ="Coley", variable = selected_option, value = "Coley", command = lambda:on_option_change(selected_option))
         # Horizontal alignement with grid
-        radio_button_1.grid(row = 0, column = 0, padx = 80, pady = 10)
-        radio_button_2.grid(row = 0, column = 1, padx = 50, pady = 10)
-        radio_button_3.grid(row = 0, column = 2, padx = 50, pady = 10)
+        radio_button_1.grid(row = 0, column = 0, padx = 5, pady = 10)
+        radio_button_2.grid(row = 0, column = 1, padx = 5, pady = 10)
+        radio_button_3.grid(row = 0, column = 2, padx = 5, pady = 10)
+        radio_button_4.grid(row = 0, column = 3, padx = 5, pady = 10)
+        radio_button_5.grid(row = 1, column = 0, padx = 5, pady = 10)
+        radio_button_6.grid(row = 1, column = 1, padx = 5, pady = 10)
+        radio_button_7.grid(row = 1, column = 2, padx = 5, pady = 10)
+        radio_button_8.grid(row = 1, column = 3, padx = 5, pady = 10)
+
 
 
         # SEPARATING LINE
